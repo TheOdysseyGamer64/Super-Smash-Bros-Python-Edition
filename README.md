@@ -18,7 +18,7 @@ more characters will be added soon...
 
 ### Running the game
 - Requires Python 3.6 or later.
-- Copy the code from reworked_smash.py into your IDLE or any online IDLE and run it (F5 on Python IDLE Desktop, if online there should be a button labelled "Run", just press that :D.
+- Copy the code from reworked_smash.py into your IDLE or any online IDLE and run it (F5 on Python IDLE Desktop, if online there should be a button labelled "Run", just press that :D).
 
 
 <img width="550" height="700" alt="image" src="https://github.com/user-attachments/assets/8aa0b81f-9e9c-4248-8d0c-1a67422abcde" />
