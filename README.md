@@ -8,6 +8,8 @@ This repository contains a variety of projects I've created using **Visual Studi
 ...is a text based representation of Super Smash Bros. Ultimate. **It is a fan game**, and is my current project. AND, 
 more characters will be added soon...
 
+Check out the release for more information
+
 ### Features
 - Character-based combat
 - Multiple attacks
