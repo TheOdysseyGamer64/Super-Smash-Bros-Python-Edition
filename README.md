@@ -4,7 +4,7 @@ Welcome to my collection of personal programming projects!
 
 This repository contains a variety of projects I've created using **Visual Studio** and **IDLE** as I learn new programming concepts and improve my software development skills.
 
-# Super Smash Bros. (Fan Edition)
+# Super Smash Bros. Python Edition
 ...is a text based representation of Super Smash Bros. Ultimate. **It is a fan game**, and is my current project. AND, 
 more characters will be added soon...
 
