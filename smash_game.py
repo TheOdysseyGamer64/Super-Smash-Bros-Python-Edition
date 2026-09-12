@@ -135,7 +135,7 @@ def select_move(character):
     valid_moves = ["1", "2", "3", "4"]
 
     if final_ready:
-        valid moves.append("5")
+        valid_moves.append("5")
     
     while True: 
         display_moves(character, final_ready)

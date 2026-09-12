@@ -107,14 +107,79 @@ MOVE_KEYS = {
     "5":"final"
 }
 
+KO_PUNCH_BONUS = 15
+
 
 def title():
 
-    print("="*60)
-    print("      SUPER SMASH BROS. ULTIMATE")
-    print("            PYTHON EDITION")
-    print("="*60)
+    print(r"""
+  _____ _   _ ____  _____ ____    ____  __  __    _    ____  _
+ / ____| | | |  _ \| ____|  _ \  / ___||  \/  |  / \  / ___|| |__
+ \___ \| | | | |_) |  _| | |_) | \___ \| |\/| | / _ \ \___ \| '_ \
+  ___) | |_| |  __/| |___|  _ <   ___) | |  | |/ ___ \ ___) | | | |
+ |____/ \___/|_|   |_____|_| \_\ |____/|_|  |_/_/   \_\____/|_| |_|
+""")
+    print("                 ASCII ARENA EDITION")
     print()
+
+
+FIGHTER_ART = {
+    "Cloud": ["  /\\_", " (o.o)", " /|_|\\", "  / \\"],
+    "Mario": ["  ___", " (o o)", " /|M|\\", "  / \\"],
+    "Luigi": ["  ___", " (o o)", " /|L|\\", "  / \\"],
+    "Sora": ["  /\\", " (o_o)", " /|K|\\", "  / \\"],
+    "Mii Swordfighter": ["  /\\", " (^-^)", " /|S|\\", "  / \\"],
+    "Little Mac": ["  ___", " (O O)", " /|M|\\", "  / \\"],
+}
+
+
+def health_bar(fighter):
+
+    maximum = CHARACTERS[fighter["name"]]["hp"]
+    filled = round(20 * fighter["hp"] / maximum)
+
+    return "[" + "#" * filled + "." * (20 - filled) + "]"
+
+
+def meter_bar(value):
+
+    filled = round(16 * value / 100)
+
+    return "[" + "#" * filled + "." * (16 - filled) + "]"
+
+
+def fighter_sprite(name):
+
+    return FIGHTER_ART.get(name, ["  /\\", " (o.o)", " /|_|\\", "  / \\"])
+
+
+def show_arena(player, enemy, round_number):
+
+    player_art = fighter_sprite(player["name"])
+    enemy_art = fighter_sprite(enemy["name"])
+
+    print("+----------------------------------------------------------+")
+    print(f"|                    ROUND {round_number:<3}                    |")
+    print(f"| {player['name']:<25} VS {enemy['name']:<22}|")
+    print("|                                                          |")
+
+    for player_line, enemy_line in zip(player_art, enemy_art):
+        print(f"| {player_line:<25}      {enemy_line:>15}   |")
+
+    print("|___________________________      _________________________|")
+    print("|__________________________/\\____/\\______________________|")
+    print("|                                                          |")
+    print(f"| HP  {player['hp']:>3} {health_bar(player)}  {enemy['hp']:>3} {health_bar(enemy)} |")
+    print(f"| FS  {player['final_meter']:>3}% {meter_bar(player['final_meter'])}  {enemy['final_meter']:>3}% {meter_bar(enemy['final_meter'])} |")
+
+    if player["name"] == "Little Mac" or enemy["name"] == "Little Mac":
+        print(f"| KO  {player['ko_meter']:>3}% {meter_bar(player['ko_meter'])}  {enemy['ko_meter']:>3}% {meter_bar(enemy['ko_meter'])} |")
+
+    if player["name"] == "Cloud" or enemy["name"] == "Cloud":
+        print(f"| LIM {player['limit']:>3}% {meter_bar(player['limit'])}  {enemy['limit']:>3}% {meter_bar(enemy['limit'])} |")
+
+    print("|                 *  *  *  *  *  *  *                     |")
+    print("+----------------------------------------------------------+")
 
 
 def display_characters():
@@ -183,22 +248,11 @@ def create_fighter(name):
     }
 
 
-def show_status(player, enemy):
+def show_status(player, enemy, round_number):
 
     print("="*60)
 
-    print(f"{player['name']} HP: {player['hp']}")
-    print(f"{enemy['name']} HP: {enemy['hp']}")
-
-    print()
-
-    print(f"Final Smash Meter: {player['final_meter']}%")
-
-    if player["name"]=="Cloud":
-        print(f"Limit Gauge: {player['limit']}%")
-
-    if player["name"]=="Little Mac":
-        print(f"KO Meter: {player['ko_meter']}%")
+    show_arena(player, enemy, round_number)
 
     print("="*60)
 
@@ -314,7 +368,7 @@ def enemy_choose_move(enemy):
 
 def battle_round(player, enemy, round_number):
 
-    show_status(player, enemy)
+    show_status(player, enemy, round_number)
 
     print()
     print(f"ROUND {round_number}")
@@ -416,12 +470,12 @@ def battle_round(player, enemy, round_number):
 
     if player["name"] == "Little Mac":
 
-        player["ko_meter"] += 20
+        player["ko_meter"] += 10 + enemy_damage + KO_PUNCH_BONUS
         player["ko_meter"] = min(player["ko_meter"],100)
 
     if enemy["name"] == "Little Mac":
 
-        enemy["ko_meter"] += 20
+        enemy["ko_meter"] += 10 + player_damage + KO_PUNCH_BONUS
         enemy["ko_meter"] = min(enemy["ko_meter"],100)
 
 
@@ -505,7 +559,7 @@ def battle(player_name):
 
     else:
 
-        print("💀 DEFEAT!")
+        print(" DEFEAT!")
         print()
         print(f"{enemy['name']} defeated {player['name']}!")
 
