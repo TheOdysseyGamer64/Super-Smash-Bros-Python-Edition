@@ -245,6 +245,8 @@ def show_status(player, enemy):
 
     if player["name"]=="Little Mac":
         print(f"KO Meter: {player['ko_meter']}%")
+        if player["ko_meter"] >= 100:
+            print("KO PUNCH READY!")
 
     print("="*60)
 
@@ -259,7 +261,10 @@ def choose_move(player):
 
     print("Choose a move")
 
-    print(f"1. {moves['neutral'][0]}")
+    if player["name"] == "Little Mac" and player["ko_meter"] >= 100:
+        print("1. KO Punch")
+    else:
+        print(f"1. {moves['neutral'][0]}")
     print(f"2. {moves['side'][0]}")
     print(f"3. {moves['up'][0]}")
     print(f"4. {moves['down'][0]}")
@@ -478,20 +483,13 @@ def battle_round(player, enemy, round_number):
             print("Critical hit!!")
 
     if player_move == "final":
-         print()
-         print("FINAL SMASH")
-         print(f"{player['name']} used {player_move_name}!")
-         print(f"It dealt {player_damage} damage!")
-
-   
-
-    enemy["hp"] -= player_damage
-
-    player["used_final"] = True
-    player["final_meter"] = 0
-  
-
-    
+        print()
+        print("FINAL SMASH")
+        print(f"{player['name']} used {player_move_name}!")
+        print(f"It dealt {player_damage} damage!")
+        enemy["hp"] -= player_damage
+        player["used_final"] = True
+        player["final_meter"] = 0
 
     if enemy_move == "final":
 
