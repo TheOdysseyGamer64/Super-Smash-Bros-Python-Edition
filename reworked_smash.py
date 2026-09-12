@@ -110,11 +110,54 @@ MOVE_KEYS = {
 
 def title():
 
-    print("="*60)
-    print("      SUPER SMASH BROS. ULTIMATE")
-    print("            PYTHON EDITION")
-    print("="*60)
+    print(r"""
+  _____ _   _ ____  _____ ____    ____  __  __    _    ____  _
+ / ____| | | |  _ \| ____|  _ \  / ___||  \/  |  / \  / ___|| |__
+ \___ \| | | | |_) |  _| | |_) | \___ \| |\/| | / _ \ \___ \| '_ \
+  ___) | |_| |  __/| |___|  _ <   ___) | |  | |/ ___ \ ___) | | | |
+ |____/ \___/|_|   |_____|_| \_\ |____/|_|  |_/_/   \_\____/|_| |_|
+""")
+    print("                 ASCII ARENA EDITION")
     print()
+
+
+FIGHTER_ART = {
+    "Cloud": ["  /\\_", " (o.o)", " /|_|\\", "  / \\"],
+    "Mario": ["  ___", " (o o)", " /|M|\\", "  / \\"],
+    "Luigi": ["  ___", " (o o)", " /|L|\\", "  / \\"],
+    "Sora": ["  /\\", " (o_o)", " /|K|\\", "  / \\"],
+    "Mii Swordfighter": ["  /\\", " (^-^)", " /|S|\\", "  / \\"],
+    "Little Mac": ["  ___", " (O O)", " /|M|\\", "  / \\"],
+}
+
+
+def health_bar(fighter):
+
+    maximum = CHARACTERS[fighter["name"]]["hp"]
+    filled = round(20 * fighter["hp"] / maximum)
+
+    return "[" + "#" * filled + "." * (20 - filled) + "]"
+
+
+def fighter_sprite(name):
+
+    return FIGHTER_ART.get(name, ["  /\\", " (o.o)", " /|_|\\", "  / \\"])
+
+
+def show_arena(player, enemy):
+
+    player_art = fighter_sprite(player["name"])
+    enemy_art = fighter_sprite(enemy["name"])
+
+    print("+----------------------------------------------------------+")
+    print(f"| {player['name']:<22} VS {enemy['name']:<22}|")
+    print("|                                                          |")
+
+    for player_line, enemy_line in zip(player_art, enemy_art):
+        print(f"| {player_line:<25}      {enemy_line:>15}   |")
+
+    print("|___________________________      _________________________|")
+    print("|__________________________/\\____/\\______________________|")
 
 
 def display_characters():
@@ -187,8 +230,11 @@ def show_status(player, enemy):
 
     print("="*60)
 
-    print(f"{player['name']} HP: {player['hp']}")
-    print(f"{enemy['name']} HP: {enemy['hp']}")
+    show_arena(player, enemy)
+    print()
+
+    print(f"{player['name']} HP: {player['hp']} {health_bar(player)}")
+    print(f"{enemy['name']} HP: {enemy['hp']} {health_bar(enemy)}")
 
     print()
 
@@ -505,7 +551,7 @@ def battle(player_name):
 
     else:
 
-        print("💀 DEFEAT!")
+        print(" DEFEAT!")
         print()
         print(f"{enemy['name']} defeated {player['name']}!")
 
