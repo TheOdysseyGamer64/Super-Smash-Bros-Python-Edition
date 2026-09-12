@@ -23,7 +23,8 @@ Check out the release for more information
 - Copy the code from reworked_smash.py into your IDLE or any online IDLE and run it (F5 on Python IDLE Desktop, if online there should be a button labelled "Run", just press that :D).
 
 
-<img width="550" height="700" alt="image" src="https://github.com/user-attachments/assets/8aa0b81f-9e9c-4248-8d0c-1a67422abcde" />
+<img width="600" height="550" alt="Screenshot 2026-09-12 110315" src="https://github.com/user-attachments/assets/2420fbe6-ca49-46c1-a8be-03cdd7c6a8b5" />
+
 
 (here's the game inside Python 3.14.7)
 
