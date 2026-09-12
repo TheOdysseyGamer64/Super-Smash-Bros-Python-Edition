@@ -107,6 +107,8 @@ MOVE_KEYS = {
     "5":"final"
 }
 
+KO_PUNCH_BONUS = 15
+
 
 def title():
 
@@ -139,18 +141,26 @@ def health_bar(fighter):
     return "[" + "#" * filled + "." * (20 - filled) + "]"
 
 
+def meter_bar(value):
+
+    filled = round(16 * value / 100)
+
+    return "[" + "#" * filled + "." * (16 - filled) + "]"
+
+
 def fighter_sprite(name):
 
     return FIGHTER_ART.get(name, ["  /\\", " (o.o)", " /|_|\\", "  / \\"])
 
 
-def show_arena(player, enemy):
+def show_arena(player, enemy, round_number):
 
     player_art = fighter_sprite(player["name"])
     enemy_art = fighter_sprite(enemy["name"])
 
     print("+----------------------------------------------------------+")
-    print(f"| {player['name']:<22} VS {enemy['name']:<22}|")
+    print(f"|                    ROUND {round_number:<3}                    |")
+    print(f"| {player['name']:<25} VS {enemy['name']:<22}|")
     print("|                                                          |")
 
     for player_line, enemy_line in zip(player_art, enemy_art):
@@ -158,6 +168,18 @@ def show_arena(player, enemy):
 
     print("|___________________________      _________________________|")
     print("|__________________________/\\____/\\______________________|")
+    print("|                                                          |")
+    print(f"| HP  {player['hp']:>3} {health_bar(player)}  {enemy['hp']:>3} {health_bar(enemy)} |")
+    print(f"| FS  {player['final_meter']:>3}% {meter_bar(player['final_meter'])}  {enemy['final_meter']:>3}% {meter_bar(enemy['final_meter'])} |")
+
+    if player["name"] == "Little Mac" or enemy["name"] == "Little Mac":
+        print(f"| KO  {player['ko_meter']:>3}% {meter_bar(player['ko_meter'])}  {enemy['ko_meter']:>3}% {meter_bar(enemy['ko_meter'])} |")
+
+    if player["name"] == "Cloud" or enemy["name"] == "Cloud":
+        print(f"| LIM {player['limit']:>3}% {meter_bar(player['limit'])}  {enemy['limit']:>3}% {meter_bar(enemy['limit'])} |")
+
+    print("|                 *  *  *  *  *  *  *                     |")
+    print("+----------------------------------------------------------+")
 
 
 def display_characters():
@@ -226,27 +248,11 @@ def create_fighter(name):
     }
 
 
-def show_status(player, enemy):
+def show_status(player, enemy, round_number):
 
     print("="*60)
 
-    show_arena(player, enemy)
-    print()
-
-    print(f"{player['name']} HP: {player['hp']} {health_bar(player)}")
-    print(f"{enemy['name']} HP: {enemy['hp']} {health_bar(enemy)}")
-
-    print()
-
-    print(f"Final Smash Meter: {player['final_meter']}%")
-
-    if player["name"]=="Cloud":
-        print(f"Limit Gauge: {player['limit']}%")
-
-    if player["name"]=="Little Mac":
-        print(f"KO Meter: {player['ko_meter']}%")
-        if player["ko_meter"] >= 100:
-            print("KO PUNCH READY!")
+    show_arena(player, enemy, round_number)
 
     print("="*60)
 
@@ -261,10 +267,7 @@ def choose_move(player):
 
     print("Choose a move")
 
-    if player["name"] == "Little Mac" and player["ko_meter"] >= 100:
-        print("1. KO Punch")
-    else:
-        print(f"1. {moves['neutral'][0]}")
+    print(f"1. {moves['neutral'][0]}")
     print(f"2. {moves['side'][0]}")
     print(f"3. {moves['up'][0]}")
     print(f"4. {moves['down'][0]}")
@@ -365,7 +368,7 @@ def enemy_choose_move(enemy):
 
 def battle_round(player, enemy, round_number):
 
-    show_status(player, enemy)
+    show_status(player, enemy, round_number)
 
     print()
     print(f"ROUND {round_number}")
@@ -467,12 +470,12 @@ def battle_round(player, enemy, round_number):
 
     if player["name"] == "Little Mac":
 
-        player["ko_meter"] += 20
+        player["ko_meter"] += 10 + enemy_damage + KO_PUNCH_BONUS
         player["ko_meter"] = min(player["ko_meter"],100)
 
     if enemy["name"] == "Little Mac":
 
-        enemy["ko_meter"] += 20
+        enemy["ko_meter"] += 10 + player_damage + KO_PUNCH_BONUS
         enemy["ko_meter"] = min(enemy["ko_meter"],100)
 
 
@@ -483,13 +486,20 @@ def battle_round(player, enemy, round_number):
             print("Critical hit!!")
 
     if player_move == "final":
-        print()
-        print("FINAL SMASH")
-        print(f"{player['name']} used {player_move_name}!")
-        print(f"It dealt {player_damage} damage!")
-        enemy["hp"] -= player_damage
-        player["used_final"] = True
-        player["final_meter"] = 0
+         print()
+         print("FINAL SMASH")
+         print(f"{player['name']} used {player_move_name}!")
+         print(f"It dealt {player_damage} damage!")
+
+   
+
+    enemy["hp"] -= player_damage
+
+    player["used_final"] = True
+    player["final_meter"] = 0
+  
+
+    
 
     if enemy_move == "final":
 
