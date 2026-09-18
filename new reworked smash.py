@@ -112,6 +112,21 @@ CHARACTERS = {
         "A silly duo of a dog and a duck."
     },
 
+    "Ness": {
+        "hp": 75,
+        "speed": 1.5,
+        "moves": {
+            "neutral": ("PK Spark", 30),
+            "side": ("PK Fire", 25),
+            "up": ("PK Thunder", 5),
+            "down": ("Magnet", 0),
+            "final": ("PK Starstorm", 47)
+        },
+        "description":
+        "A village boy who posses ESPER powers."
+    },
+        
+
 }
 
 MOVE_KEYS = {
@@ -201,7 +216,7 @@ def choose_character():
 
         display_characters()
 
-        choice = input("Select Fighter (1-7): ")
+        choice = input("Select Fighter (1-8): ")
 
         if choice.isdigit():
 
