@@ -88,15 +88,30 @@ CHARACTERS = {
         "hp": 90,
         "speed": 1.10,
         "moves": {
-            "neutral": ("Straight Lunge", 8),
-            "side": ("Jolt Haymaker", 14),
+            "neutral": ("Straight Lunge", 18),
+            "side": ("Jolt Haymaker", 8),
             "up": ("Rising Uppercut", 10),
             "down": ("Slip Counter", 0),
             "final": ("Giga Mac", 70)
         },
         "description":
         "A fearless boxer with devastating punches."
-    }
+    },
+
+    "Duck Hunt Duo": {
+        "hp": 90,
+        "speed": 1.5,
+        "moves": {
+            "neutral": ("Can", 13),
+            "side": ("8-bit Frisbee", 20),
+            "up": ("the duck", 0),
+            "down": ("Gunman", 16),
+            "final": ("Firing Squad", 52)
+        },
+        "description":
+        "A silly duo of a dog and a duck."
+    },
+
 }
 
 MOVE_KEYS = {
@@ -128,6 +143,7 @@ FIGHTER_ART = {
     "Sora": ["  /\\", " (o_o)", " /|K|\\", "  / \\"],
     "Mii Swordfighter": ["  /\\", " (^-^)", " /|S|\\", "  / \\"],
     "Little Mac": ["  ___", " (O O)", " /|M|\\", "  / \\"],
+    "Duck Hunt Duo": ["  ___", " (O O)", " /|D|\\", " / \\"],
 }
 
 
@@ -137,8 +153,6 @@ def health_bar(fighter):
     filled = round(20 * fighter["hp"] / maximum)
 
     return "[" + "#" * filled + "." * (20 - filled) + "]"
-
-
 def fighter_sprite(name):
 
     return FIGHTER_ART.get(name, ["  /\\", " (o.o)", " /|_|\\", "  / \\"])
@@ -187,7 +201,7 @@ def choose_character():
 
         display_characters()
 
-        choice = input("Select Fighter (1-6): ")
+        choice = input("Select Fighter (1-7): ")
 
         if choice.isdigit():
 
