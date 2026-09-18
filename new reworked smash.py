@@ -179,11 +179,11 @@ def show_arena(player, enemy):
     enemy_art = fighter_sprite(enemy["name"])
 
     print("+----------------------------------------------------------+")
-    print(f"| {player['name']:<22} VS {enemy['name']:<22}|")
+    print(f"| {player['name']:<22} VS {enemy['name']:<22}         |")
     print("|                                                          |")
 
     for player_line, enemy_line in zip(player_art, enemy_art):
-        print(f"| {player_line:<25}      {enemy_line:>15}   |")
+        print(f"| {player_line:<25}      {enemy_line:>15}           |")
 
     print("|___________________________      _________________________|")
     print("|__________________________/\\____/\\______________________|")
