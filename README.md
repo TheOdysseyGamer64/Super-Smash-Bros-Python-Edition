@@ -2,6 +2,9 @@
 
 **Super Smash Bros. Python Edition** is a text-based fighting game inspired by the **Super Smash Bros.** series. I wanted to make a text-based game that truly represented one of my most favourite games... and here we are!
 
+<img width="480" height="639" alt="ezgif-4eb79cd258ab6e48" src="https://github.com/user-attachments/assets/93df3332-b1e7-43e6-a520-4e28f70edecc" />
+
+
 ## Features
 
 - Playable Super Smash Bros.-inspired fighters
@@ -36,19 +39,16 @@ Build Little Mac's **KO Meter** to **100%** and unlock the devastating **KO Punc
 
 ### Requirements
 
-- **Python 3.x** (a recent version is recommended)
-- A Python-compatible editor such as:
-  - **Visual Studio Code**
-  - **Python IDLE**
+- A terminal (Windows and MacOS should work) or an editor with a runtime environment
 
 ### How to Play
 
-1. Open the `.py` file in your preferred Python editor (You'll find the most stable version under the latest release).
-2. Run the program.
+1. Open the `.py` file in your preferred Python editor or terminal
+2. Run the file:
 
-**Python IDLE:** Press `F5`
-
-**VS Code:** Press the `▶ Run` button
+     - **Python IDLE:** Press `F5`
+     - **VS Code:** Press the `▶ Run` button
+     - **Terminal:** Usually it begins to execute the code once you open the file
 
 ## Disclaimer (Please Read!)
 
@@ -74,26 +74,28 @@ Future updates may introduce:
 
 ### Starting the Game
 
-<img width="700" height="800" alt="Screenshot 2026-09-12 105903" src="https://github.com/user-attachments/assets/f23c3598-52e4-40ac-af91-11c3dcabbd56" />
+<img width="480" height="639" alt="image" src="https://github.com/user-attachments/assets/323dfa56-18dc-4faa-a791-4077a6718e63" />
 
 
 When you first load up the game in the terminal, it looks like this.
 
 ### Fighters Without Special Mechanics
 
-<img width="650" height="450" alt="Screenshot 2026-09-12 110315" src="https://github.com/user-attachments/assets/787ca793-1d03-4d9b-aa97-e8ddc9380071" />
+<img width="600" height="473" alt="image" src="https://github.com/user-attachments/assets/e9adc41e-3f9b-4cd5-97dc-3b000afd9f64" />
+
 
 Characters without special mechanics won't have an extra meter to charge.
 
 ### Fighters With Special Mechanics
 
-<img width="650" height="450" alt="Screenshot 2026-09-12 110712" src="https://github.com/user-attachments/assets/dde9638b-225f-4750-9c40-d329b20014c1" />
+<img width="600" height="450" alt="image" src="https://github.com/user-attachments/assets/6e522e0b-bdac-459f-92d1-eeab22be7d01" />
+
 
 However, fighters with special mechanics will have a meter to charge to unlock them.
 
 ### Fully Charged Mechanics
 
-<img width="650" height="500" alt="Screenshot 2026-09-12 110835" src="https://github.com/user-attachments/assets/c8ec1660-d2d2-4fcb-9f3a-85ad7fca29f0" />
+<img width="600" height="450" alt="image" src="https://github.com/user-attachments/assets/3ac722e4-b959-471c-98ae-52d8752dfd41" />
 
 
 The mechanic will appear in the moveset once the meter is fully charged (**100%**).
