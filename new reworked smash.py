@@ -1,16 +1,7 @@
-"""
-=========================================================
-SUPER SMASH BROS ULTIMATE - PYTHON EDITION V2
-Created by Diesel
-=========================================================
-"""
-
 import random
 import time
 
-
 CHARACTERS = {
-
     "Cloud": {
         "hp": 100,
         "speed": 0.90,
@@ -21,8 +12,7 @@ CHARACTERS = {
             "down": ("Limit Break", 18),
             "final": ("Omnislash Ver. 5", 55)
         },
-        "description":
-        "A mercenary who grows stronger through his Limit Gauge."
+        "description": "A mercenary who grows stronger through his Limit Gauge."
     },
 
     "Mario": {
@@ -35,8 +25,7 @@ CHARACTERS = {
             "down": ("F.L.U.D.D.", 10),
             "final": ("Mario Finale", 65)
         },
-        "description":
-        "Nintendo's famous plumber."
+        "description": "Nintendo's famous plumber."
     },
 
     "Luigi": {
@@ -49,8 +38,7 @@ CHARACTERS = {
             "down": ("Luigi Cyclone", 11),
             "final": ("Poltergust G-00", 48)
         },
-        "description":
-        "A timid fighter with surprising power."
+        "description": "A timid fighter with surprising power."
     },
 
     "Sora": {
@@ -63,8 +51,7 @@ CHARACTERS = {
             "down": ("Magic Burst", 16),
             "final": ("Sealing the Keyhole", 41)
         },
-        "description":
-        "The Keyblade wielder."
+        "description": "The Keyblade wielder."
     },
 
     "Mii Swordfighter": {
@@ -77,8 +64,7 @@ CHARACTERS = {
             "down": ("Blade Counter", 13),
             "final": ("Final Edge", 32)
         },
-        "description":
-        "A balanced sword fighter."
+        "description": "A balanced sword fighter."
     },
 
     "Little Mac": {
@@ -91,8 +77,7 @@ CHARACTERS = {
             "down": ("Slip Counter", 0),
             "final": ("Giga Mac", 70)
         },
-        "description":
-        "A fearless boxer with devastating punches."
+        "description": "A fearless boxer with devastating punches."
     },
 
     "Duck Hunt Duo": {
@@ -105,8 +90,7 @@ CHARACTERS = {
             "down": ("Gunman", 16),
             "final": ("Firing Squad", 52)
         },
-        "description":
-        "A silly duo of a dog and a duck."
+        "description": "A silly duo of a dog and a duck."
     },
 
     "Ness": {
@@ -119,10 +103,8 @@ CHARACTERS = {
             "down": ("Magnet", 0),
             "final": ("PK Starstorm", 47)
         },
-        "description":
-        "A village boy who posses ESPER powers."
-    },
-
+        "description": "A village boy who possesses ESPER powers."
+    }
 }
 
 MOVE_KEYS = {
@@ -131,6 +113,16 @@ MOVE_KEYS = {
     "3": "up",
     "4": "down",
     "5": "final"
+}
+
+FIGHTER_ART = {
+    "Cloud": ["  /\\_", " (o.o)", " /|_|\\", "  / \\"],
+    "Mario": ["  ___", " (o o)", " /|M|\\", "  / \\"],
+    "Luigi": ["  ___", " (o o)", " /|L|\\", "  / \\"],
+    "Sora": ["  /\\", " (o_o)", " /|K|\\", "  / \\"],
+    "Mii Swordfighter": ["  /\\", " (^-^)", " /|S|\\", "  / \\"],
+    "Little Mac": ["  ___", " (O O)", " /|M|\\", "  / \\"],
+    "Duck Hunt Duo": ["  ___", " (O O)", " /|D|\\", " / \\"]
 }
 
 
@@ -143,19 +135,9 @@ def title():
   ___) | |_| |  __/| |___|  _ <   ___) | |  | |/ ___ \ ___) | | | |
  |____/ \___/|_|   |_____|_| \_\ |____/|_|  |_/_/   \_\____/|_| |_|
 """)
-    print("                 Python Edition")
+
+    print("                         Python Edition")
     print()
-
-
-FIGHTER_ART = {
-    "Cloud": ["  /\\_", " (o.o)", " /|_|\\", "  / \\"],
-    "Mario": ["  ___", " (o o)", " /|M|\\", "  / \\"],
-    "Luigi": ["  ___", " (o o)", " /|L|\\", "  / \\"],
-    "Sora": ["  /\\", " (o_o)", " /|K|\\", "  / \\"],
-    "Mii Swordfighter": ["  /\\", " (^-^)", " /|S|\\", "  / \\"],
-    "Little Mac": ["  ___", " (O O)", " /|M|\\", "  / \\"],
-    "Duck Hunt Duo": ["  ___", " (O O)", " /|D|\\", " / \\"],
-}
 
 
 def health_bar(fighter):
@@ -180,17 +162,29 @@ def show_arena(player, enemy):
     enemy_art = fighter_sprite(enemy["name"])
 
     print("+----------------------------------------------------------+")
-    print(f"| {player['name']:<22} VS {enemy['name']:<22}         |")
+    print(
+        f"| {player['name']:<22} VS "
+        f"{enemy['name']:<22}         |"
+    )
     print("|                                                          |")
 
-    for player_line, enemy_line in zip(player_art, enemy_art):
+    for player_line, enemy_line in zip(
+        player_art,
+        enemy_art
+    ):
+
         print(
             f"| {player_line:<25}      "
             f"{enemy_line:>15}           |"
         )
 
-    print("|___________________________      _________________________|")
-    print("|__________________________/\\____/\\______________________|")
+    print(
+        "|___________________________      _________________________|"
+    )
+
+    print(
+        " |__________________________/\\____/\\______________________|"
+    )
 
 
 def display_characters():
@@ -244,19 +238,12 @@ def choose_character():
 def create_fighter(name):
 
     return {
-
         "name": name,
-
         "hp": CHARACTERS[name]["hp"],
-
         "final_meter": 0,
-
         "limit": 0,
-
         "ko_meter": 0,
-
         "used_final": False
-
     }
 
 
@@ -265,6 +252,7 @@ def show_status(player, enemy):
     print("=" * 60)
 
     show_arena(player, enemy)
+
     print()
 
     print(
@@ -317,11 +305,9 @@ def show_status(player, enemy):
 def choose_move(player):
 
     fighter = player["name"]
-
     moves = CHARACTERS[fighter]["moves"]
 
     print()
-
     print("Choose a move")
 
     if (
@@ -387,14 +373,19 @@ def calculate_damage(player, move):
 
     critical = False
 
-    # Random damage variation
+    if (
+        fighter == "Ness"
+        and move == "down"
+    ):
+
+        return move_name, 0, False
+
     damage += random.randint(-2, 2)
 
     if damage < 1:
 
         damage = 1
 
-    # Luigi critical Up Special
     if (
         fighter == "Luigi"
         and move == "up"
@@ -403,10 +394,8 @@ def calculate_damage(player, move):
         if random.randint(1, 5) == 1:
 
             damage *= 2
-
             critical = True
 
-    # Cloud Limit Break
     if fighter == "Cloud":
 
         if (
@@ -415,14 +404,12 @@ def calculate_damage(player, move):
         ):
 
             damage += 10
-
             player["limit"] = 0
 
             print()
             print("LIMIT BREAK!")
             print()
 
-    # Little Mac KO Punch
     if fighter == "Little Mac":
 
         if (
@@ -431,7 +418,6 @@ def calculate_damage(player, move):
         ):
 
             move_name = "KO Punch"
-
             damage = 32
 
             player["ko_meter"] = 0
@@ -442,10 +428,6 @@ def calculate_damage(player, move):
 
     return move_name, damage, critical
 
-
-# =========================================================
-# V1.1.1 - SMARTER CPU
-# =========================================================
 
 def enemy_choose_move(enemy, player):
 
@@ -462,57 +444,37 @@ def enemy_choose_move(enemy, player):
         enemy_name
     ]["moves"]
 
-    # -----------------------------------------------------
-    # 1. USE FINAL SMASH INTELLIGENTLY
-    # -----------------------------------------------------
-
     if (
         enemy["final_meter"] >= 100
         and not enemy["used_final"]
     ):
 
-        # If the player is already low on HP,
-        # the CPU is very likely to use Final Smash.
         if player["hp"] <= 45:
 
             return "final"
 
-        # Otherwise, the CPU has a 60% chance
-        # of using it when available.
         if random.random() < 0.60:
 
             return "final"
-
-    # -----------------------------------------------------
-    # 2. LITTLE MAC - KO PUNCH
-    # -----------------------------------------------------
 
     if (
         enemy_name == "Little Mac"
         and enemy["ko_meter"] >= 100
     ):
 
-        # If the player is low, prioritise KO Punch.
         if player["hp"] <= 50:
 
             return "neutral"
 
-        # Otherwise, use it most of the time.
         if random.random() < 0.75:
 
             return "neutral"
-
-    # -----------------------------------------------------
-    # 3. CLOUD - LIMIT BREAK
-    # -----------------------------------------------------
 
     if (
         enemy_name == "Cloud"
         and enemy["limit"] >= 100
     ):
 
-        # Limit Break is prioritised against
-        # a damaged player.
         if player["hp"] <= 60:
 
             return "down"
@@ -521,35 +483,21 @@ def enemy_choose_move(enemy, player):
 
             return "down"
 
-    # -----------------------------------------------------
-    # 4. NESS - MAGNET
-    # -----------------------------------------------------
-
     if enemy_name == "Ness":
 
-        # Ness can choose Magnet when badly damaged.
         if enemy["hp"] <= 30:
 
             if random.random() < 0.65:
 
                 return "down"
 
-    # -----------------------------------------------------
-    # 5. DUCK HUNT DUO - THE DUCK
-    # -----------------------------------------------------
-
     if enemy_name == "Duck Hunt Duo":
 
-        # Duck Hunt can use the duck when badly damaged.
         if enemy["hp"] <= 30:
 
             if random.random() < 0.65:
 
                 return "up"
-
-    # -----------------------------------------------------
-    # 6. ATTACK A LOW-HP PLAYER
-    # -----------------------------------------------------
 
     if player["hp"] <= 30:
 
@@ -571,10 +519,6 @@ def enemy_choose_move(enemy, player):
                     strong_moves
                 )
 
-    # -----------------------------------------------------
-    # 7. DON'T WASTE UTILITY MOVES
-    # -----------------------------------------------------
-
     if enemy_name == "Ness":
 
         if enemy["hp"] > 50:
@@ -586,10 +530,6 @@ def enemy_choose_move(enemy, player):
         if enemy["hp"] > 50:
 
             moves.remove("up")
-
-    # -----------------------------------------------------
-    # 8. SLIGHTLY FAVOUR STRONGER ATTACKS
-    # -----------------------------------------------------
 
     weighted_moves = []
 
@@ -622,13 +562,26 @@ def battle_round(player, enemy, round_number):
 
     player_move = choose_move(player)
 
-    # V1.1.1:
-    # CPU now considers the player's HP,
-    # its own meters and its own HP.
     enemy_move = enemy_choose_move(
         enemy,
         player
     )
+
+    round_start_hp = player["hp"]
+
+    magnet_recovery = 0
+
+    if (
+        player["name"] == "Ness"
+        and player_move == "down"
+    ):
+
+        magnet_recovery = min(
+            10,
+            75 - player["hp"]
+        )
+
+        player["hp"] += magnet_recovery
 
     player_move_name, player_damage, critical = (
         calculate_damage(
@@ -660,6 +613,26 @@ def battle_round(player, enemy, round_number):
             f"{player_damage} damage!"
         )
 
+    elif (
+        player["name"] == "Ness"
+        and player_move == "down"
+    ):
+
+        print("You used Magnet!")
+
+        if magnet_recovery > 0:
+
+            print(
+                f"Ness recovered "
+                f"{magnet_recovery} HP!"
+            )
+
+        else:
+
+            print(
+                "Ness is already at full HP!"
+            )
+
     else:
 
         print(
@@ -686,17 +659,31 @@ def battle_round(player, enemy, round_number):
 
         if enemy_hits:
 
+            player_hp_before = player["hp"]
+
             print(
                 "Enemy landed the attack!"
             )
 
             player["hp"] -= enemy_damage
 
+            actual_damage = (
+                player_hp_before
+                - player["hp"]
+            )
+
             print(
                 "Slip Counter failed!"
             )
 
+            print(
+                f"You took "
+                f"{actual_damage} damage!"
+            )
+
         else:
+
+            enemy_hp_before = enemy["hp"]
 
             print(
                 "Enemy missed!"
@@ -706,43 +693,63 @@ def battle_round(player, enemy, round_number):
 
             enemy["hp"] -= counter
 
+            actual_counter_damage = (
+                enemy_hp_before
+                - enemy["hp"]
+            )
+
             print(
                 "Slip Counter activated!"
             )
 
             print(
                 f"Enemy took "
-                f"{counter} damage!"
+                f"{actual_counter_damage} damage!"
             )
 
     else:
+
+        enemy_hp_before = enemy["hp"]
 
         if player_move == "final":
 
             enemy["hp"] -= player_damage
 
+            actual_damage = (
+                enemy_hp_before
+                - enemy["hp"]
+            )
+
             print(
                 f"Enemy took "
-                f"{player_damage} damage!"
+                f"{actual_damage} damage!"
             )
+
+        elif (
+            player["name"] == "Ness"
+            and player_move == "down"
+        ):
+
+            pass
 
         elif random.random() < 0.80:
 
             enemy["hp"] -= player_damage
 
+            actual_damage = (
+                enemy_hp_before
+                - enemy["hp"]
+            )
+
             print(
                 f"Enemy took "
-                f"{player_damage} damage!"
+                f"{actual_damage} damage!"
             )
 
         else:
 
-            print(
-                "You missed!"
-            )
+            print("You missed!")
 
-        # Stop the enemy attacking if the player
-        # was defeated by the player's attack.
         if enemy["hp"] <= 0:
 
             enemy["hp"] = 0
@@ -786,28 +793,88 @@ def battle_round(player, enemy, round_number):
 
         if enemy_critical:
 
-            print(
-                "Critical Hit!"
+            print("Critical Hit!")
+
+        if (
+            enemy["name"] == "Ness"
+            and enemy_move == "down"
+        ):
+
+            enemy_recovery = min(
+                10,
+                75 - enemy["hp"]
             )
 
-        if random.random() < 0.80:
+            enemy["hp"] += enemy_recovery
+
+            if enemy_recovery > 0:
+
+                print(
+                    f"Ness recovered "
+                    f"{enemy_recovery} HP!"
+                )
+
+            else:
+
+                print(
+                    "Ness is already at full HP!"
+                )
+
+        elif enemy_move == "final":
+
+            print()
+
+            player_hp_before = player["hp"]
+
+            if random.random() < 0.80:
+
+                player["hp"] -= enemy_damage
+
+                actual_damage = (
+                    round_start_hp
+                    - player["hp"]
+                )
+
+                print(
+                    f"You took "
+                    f"{actual_damage} damage!"
+                )
+
+            else:
+
+                print("Enemy missed!")
+
+        elif random.random() < 0.80:
+
+            player_hp_before = player["hp"]
 
             player["hp"] -= enemy_damage
 
+            if (
+                player["name"] == "Ness"
+                and player_move == "down"
+            ):
+
+                actual_damage = (
+                    round_start_hp
+                    - player["hp"]
+                )
+
+            else:
+
+                actual_damage = (
+                    player_hp_before
+                    - player["hp"]
+                )
+
             print(
                 f"You took "
-                f"{enemy_damage} damage!"
+                f"{actual_damage} damage!"
             )
 
         else:
 
-            print(
-                "Enemy missed!"
-            )
-
-    # -----------------------------------------------------
-    # Final Smash meters
-    # -----------------------------------------------------
+            print("Enemy missed!")
 
     player["final_meter"] = min(
         player["final_meter"] + 20,
@@ -819,83 +886,43 @@ def battle_round(player, enemy, round_number):
         100
     )
 
-    print()
-
-    print(
-        f"Final Smash Meter: "
-        f"{player['final_meter']}%"
-    )
-
-    # -----------------------------------------------------
-    # Cloud Limit Gauge
-    # -----------------------------------------------------
-
     if player["name"] == "Cloud":
 
-        player["limit"] += 25
-
         player["limit"] = min(
-            player["limit"],
+            player["limit"] + 25,
             100
         )
 
     if enemy["name"] == "Cloud":
 
-        enemy["limit"] += 25
-
         enemy["limit"] = min(
-            enemy["limit"],
+            enemy["limit"] + 25,
             100
         )
 
-    # -----------------------------------------------------
-    # Little Mac KO Meter
-    # -----------------------------------------------------
-
     if player["name"] == "Little Mac":
 
-        player["ko_meter"] += 20
-
         player["ko_meter"] = min(
-            player["ko_meter"],
+            player["ko_meter"] + 20,
             100
         )
 
     if enemy["name"] == "Little Mac":
 
-        enemy["ko_meter"] += 20
-
         enemy["ko_meter"] = min(
-            enemy["ko_meter"],
+            enemy["ko_meter"] + 20,
             100
         )
-
-    # -----------------------------------------------------
-    # Final Smash activation
-    # -----------------------------------------------------
 
     if player_move == "final":
 
         player["used_final"] = True
-
         player["final_meter"] = 0
 
     if enemy_move == "final":
 
-        print()
-        print(
-            "Enemy used their FINAL SMASH!"
-        )
-
-        player["hp"] -= enemy_damage
-
         enemy["used_final"] = True
-
         enemy["final_meter"] = 0
-
-    # -----------------------------------------------------
-    # Prevent negative HP
-    # -----------------------------------------------------
 
     player["hp"] = max(
         0,
@@ -905,6 +932,31 @@ def battle_round(player, enemy, round_number):
     enemy["hp"] = max(
         0,
         enemy["hp"]
+    )
+
+    if (
+        player["name"] == "Ness"
+        and player_move == "down"
+        and player["hp"] > round_start_hp
+    ):
+
+        net_recovery = (
+            player["hp"]
+            - round_start_hp
+        )
+
+        if net_recovery > magnet_recovery:
+
+            print(
+                f"Ness gained "
+                f"{net_recovery} HP overall!"
+            )
+
+    print()
+
+    print(
+        f"Final Smash Meter: "
+        f"{player['final_meter']}%"
     )
 
     input(
@@ -966,9 +1018,7 @@ def battle(player_name):
 
         round_number += 1
 
-        time.sleep(
-            0.5
-        )
+        time.sleep(0.5)
 
     print()
 
@@ -978,9 +1028,7 @@ def battle(player_name):
 
     if player["hp"] > 0:
 
-        print(
-            "VICTORY!"
-        )
+        print("VICTORY!")
 
         print()
 
@@ -992,9 +1040,7 @@ def battle(player_name):
 
     else:
 
-        print(
-            "DEFEAT!"
-        )
+        print("DEFEAT!")
 
         print()
 
