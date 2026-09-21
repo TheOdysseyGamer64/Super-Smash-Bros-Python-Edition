@@ -104,7 +104,27 @@ CHARACTERS = {
             "final": ("PK Starstorm", 47)
         },
         "description": "A village boy who possesses ESPER powers."
-    }
+    },
+
+    "Kirby": {
+        "hp": 70,
+        "speed": 1.7,
+        "moves": {
+            "neutral": ("Inhaler of Doom and Despair", 3),
+            "side": ("Flame Hammer", 27),
+            "up": ("Blue Blade", 15),
+            "down": ("Shapeshifter", 27),
+            "final": ("Rainbow Finisher", 65)
+        },
+        "description": "A pink blob."
+    },
+
+    "Min Min": {
+        "hp": 100,
+        "speed": 0.7,
+        "moves": {
+            "neutral": ("", 37),
+            
 }
 
 MOVE_KEYS = {
@@ -119,10 +139,12 @@ FIGHTER_ART = {
     "Cloud": ["  /\\_", " (o.o)", " /|_|\\", "  / \\"],
     "Mario": ["  ___", " (o o)", " /|M|\\", "  / \\"],
     "Luigi": ["  ___", " (o o)", " /|L|\\", "  / \\"],
-    "Sora": ["  /\\", " (o_o)", " /|K|\\", "  / \\"],
+    "Sora": ["  /\\", " (o_o)", " /|S|\\", "  / \\"],
     "Mii Swordfighter": ["  /\\", " (^-^)", " /|S|\\", "  / \\"],
     "Little Mac": ["  ___", " (O O)", " /|M|\\", "  / \\"],
-    "Duck Hunt Duo": ["  ___", " (O O)", " /|D|\\", " / \\"]
+    "Duck Hunt Duo": ["  ___", " (O O)", " /|D|\\", " / \\"],
+    "Kirby": [" ___", " (O O)", " /|K|\\", " / \\"],
+    "Ness": [" __", " (0 0)",  " /|N|\\", " / \\"]
 }
 
 
