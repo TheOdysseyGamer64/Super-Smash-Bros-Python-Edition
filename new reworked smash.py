@@ -119,12 +119,18 @@ CHARACTERS = {
         "description": "A pink blob."
     },
 
-    "Min Min": {
-        "hp": 100,
-        "speed": 0.7,
+    "Kazuya": {
+        "hp": 97,
+        "speed": 0.8,
         "moves": {
-            "neutral": ("", 37),
-            
+            "neutral": ("Laser Eye", 10),
+            "side": ("Phantom Fist", 14),
+            "up": ("Devil Ascension", 7),
+            "down": ("Hell's Door", 43),
+            "final": ("Laser Eye Galore", 66)
+        },
+        "description": "A mercenary seeking revenge transforming into an all-powerful demon"
+    }
 }
 
 MOVE_KEYS = {
@@ -143,8 +149,9 @@ FIGHTER_ART = {
     "Mii Swordfighter": ["  /\\", " (^-^)", " /|S|\\", "  / \\"],
     "Little Mac": ["  ___", " (O O)", " /|M|\\", "  / \\"],
     "Duck Hunt Duo": ["  ___", " (O O)", " /|D|\\", " / \\"],
-    "Kirby": [" ___", " (O O)", " /|K|\\", " / \\"],
-    "Ness": [" __", " (0 0)",  " /|N|\\", " / \\"]
+    "Kirby": [" ___", " (O O)", " /|k|\\", " / \\"],
+    "Ness": [" __", " (0 0)",  " /|N|\\", " / \\"],
+    "Kazuya" [" __", " (0 0  
 }
 
 
