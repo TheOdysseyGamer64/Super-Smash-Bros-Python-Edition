@@ -2,7 +2,8 @@
 
 **Super Smash Bros. Python Edition** is a text-based fighting game inspired by the **Super Smash Bros.** series. I wanted to make a text-based game that truly represented one of my most favourite games... and here we are!
 
-<img width="702" height="720" alt="Recording2026-09-30161930-ezgif com-optimize" src="https://github.com/user-attachments/assets/fc5b44cd-9fb6-4c7f-9629-a7d4c6dabcad" />
+<img width="513" height="720" alt="Recording2026-09-30182541-ezgif com-optimize" src="https://github.com/user-attachments/assets/b54aa9ae-1f20-47b7-95e6-5615c7b26ad6" />
+
 
 
 ## Features
