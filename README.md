@@ -2,7 +2,7 @@
 
 **Super Smash Bros. Python Edition** is a text-based fighting game inspired by the **Super Smash Bros.** series. I wanted to make a text-based game that truly represented one of my most favourite games... and here we are!
 
-<img width="480" height="639" alt="ezgif-4eb79cd258ab6e48" src="https://github.com/user-attachments/assets/93df3332-b1e7-43e6-a520-4e28f70edecc" />
+<img width="702" height="720" alt="Recording2026-09-30161930-ezgif com-optimize" src="https://github.com/user-attachments/assets/fc5b44cd-9fb6-4c7f-9629-a7d4c6dabcad" />
 
 
 ## Features
@@ -74,14 +74,15 @@ Future updates may introduce:
 
 ### Starting the Game
 
-<img width="480" height="639" alt="image" src="https://github.com/user-attachments/assets/323dfa56-18dc-4faa-a791-4077a6718e63" />
+<img width="480" height="639" alt="image" src="https://github.com/user-attachments/assets/4e8620eb-7312-4db9-b779-d693d045c517" />
+
 
 
 When you first load up the game in the terminal, it looks like this.
 
 ### Fighters Without Special Mechanics
 
-<img width="600" height="473" alt="image" src="https://github.com/user-attachments/assets/e9adc41e-3f9b-4cd5-97dc-3b000afd9f64" />
+<img width="800" height="405" alt="image" src="https://github.com/user-attachments/assets/dac5a2e1-410b-4897-b2dc-8ebe1205d661" />
 
 
 Characters without special mechanics won't have an extra meter to charge.
