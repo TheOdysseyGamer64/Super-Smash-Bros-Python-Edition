@@ -33,10 +33,10 @@ CHARACTERS = {
         "speed": 0.95,
         "moves": {
             "neutral": ("Fireball", 5),
-            "side": ("Green Missile", 14),
-            "up": ("Super Jump Punch", 10),
-            "down": ("Luigi Cyclone", 11),
-            "final": ("Poltergust G-00", 48)
+            "side": ("Green Missile", 29),
+            "up": ("Super Jump Punch", 15),
+            "down": ("Luigi Cyclone", 20),
+            "final": ("Poltergust G-00", 52)
         },
         "description": "A timid fighter with surprising power."
     },
@@ -45,11 +45,11 @@ CHARACTERS = {
         "hp": 97,
         "speed": 0.93,
         "moves": {
-            "neutral": ("Keyblade Slash", 6),
-            "side": ("Sonic Blade", 14),
-            "up": ("Aerial Sweep", 9),
-            "down": ("Magic Burst", 16),
-            "final": ("Sealing the Keyhole", 41)
+            "neutral": ("Keyblade Slash", 16),
+            "side": ("Sonic Blade", 17),
+            "up": ("Aerial Sweep", 30),
+            "down": ("Magic Burst", 20),
+            "final": ("Sealing the Keyhole", 47)
         },
         "description": "The Keyblade wielder."
     },
@@ -71,11 +71,11 @@ CHARACTERS = {
         "hp": 90,
         "speed": 1.10,
         "moves": {
-            "neutral": ("Straight Lunge", 18),
-            "side": ("Jolt Haymaker", 8),
+            "neutral": ("Straight Lunge", 20),
+            "side": ("Jolt Haymaker", 28),
             "up": ("Rising Uppercut", 10),
             "down": ("Slip Counter", 0),
-            "final": ("Giga Mac", 70)
+            "final": ("Giga Mac", 65)
         },
         "description": "A fearless boxer with devastating punches."
     },
