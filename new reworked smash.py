@@ -257,12 +257,49 @@ def display_characters():
     for fighter in CHARACTERS:
 
         stats = CHARACTERS[fighter]
+        moves = stats["moves"]
+        width = 38
 
-        print(f"{number}. {fighter}")
-        print(f"   HP: {stats['hp']}")
-        print(f"   Speed: {stats['speed']}")
-        print(f"   {stats['description']}")
-        print()
+        print(f"{number}.")
+        print("╔" + "═" * width + "╗")
+        print("║" + fighter.upper().center(width) + "║")
+        print("╠" + "═" * width + "╣")
+        
+        print("║ " + f"HP:         {stats['hp']}".ljust(width - 1) + "║")
+        print("║ " + f"SPEED:      {stats['speed']}".ljust(width - 1) + "║")
+        print("║" + " " * width + "║")
+
+        for move_key in ["neutral", "side", "up", "down"]:
+            move_name, damage = moves[move_key]
+            
+            if len(move_name) > 23:
+                move_name = move_name[:20] + "..."
+                
+            line = f"{move_name}".ljust(26) + f"{damage}".rjust(4)
+            print("║ " + line.ljust(width - 1) + "║")
+
+        if fighter == "Terry":
+            print("║" + " " * width + "║")
+            print("║ " + "GO! at ≤35 HP".ljust(width - 1) + "║")
+            for move_key in ["power_geyser", "buster_wolf"]:
+                move_name, damage = moves[move_key]
+                line = f"{move_name}".ljust(26) + f"{damage}".rjust(4)
+                print("║ " + line.ljust(width - 1) + "║")
+
+        print("║" + " " * width + "║")
+
+        final_name, final_damage = moves["final"]
+        final_label = f"Final: {final_name}"
+
+        if len(final_label) > 26:
+            final_label = final_label[:23] + "..."
+
+        final_line = final_label.ljust(26) + f"{final_damage}".rjust(4)
+        print("║ " + final_line.ljust(width - 1) + "║")
+
+        print("╚" + "═" * width + "╝")
+        
+        print(f"  {stats['description']}\n")
 
         number += 1
 
