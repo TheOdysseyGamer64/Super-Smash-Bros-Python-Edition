@@ -126,11 +126,25 @@ CHARACTERS = {
             "neutral": ("Laser Eye", 10),
             "side": ("Phantom Fist", 14),
             "up": ("Devil Ascension", 7),
-            "down": ("Hell's Door", 43),
+            "down": ("Hell's Door", 33),
             "final": ("Laser Eye Galore", 66)
         },
         "description": "A mercenary seeking revenge transforming into an all-powerful demon"
+    },
+
+   "R.O.B.": {
+       "hp": 100,
+       "speed": 1.1,
+       "moves": {
+           "neutral": ("Charger Laser", 19),
+           "side": ("Tornado Fist", 30),
+           "up": ("Thruster", 5),
+           "down": ("Sweep The Floor", 29),
+           "final":("Ultra Laser 7000", 70)
+         },
+       "description": "A heavyweight hard - hitter... but he's a robot"
     }
+           
 }
 
 MOVE_KEYS = {
@@ -151,7 +165,8 @@ FIGHTER_ART = {
     "Duck Hunt Duo": ["  ___", " (O O)", " /|D|\\", " / \\"],
     "Kirby": [" ___", " (O O)", " /|k|\\", " / \\"],
     "Ness": [" __", " (0 0)", " /|N|\\", " / \\"],
-    "Kazuya": ["  __", " (0 0)", " /|K|\\", "  / \\"]
+    "Kazuya": ["  __", " (0 0)", " /|K|\\", "  / \\"],
+    "R.O.B.": ["   __", " (O O)", " /|R|\\", "  / \\"]
 }
 
 
