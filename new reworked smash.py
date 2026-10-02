@@ -197,8 +197,7 @@ def title():
 
  
 """)
-
-    print("                         Python Edition")
+    print("               Python Edition")
     print()
 
 
