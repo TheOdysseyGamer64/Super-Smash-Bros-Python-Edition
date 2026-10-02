@@ -132,19 +132,33 @@ CHARACTERS = {
         "description": "A mercenary seeking revenge transforming into an all-powerful demon"
     },
 
-   "R.O.B.": {
-       "hp": 100,
-       "speed": 1.1,
-       "moves": {
-           "neutral": ("Charger Laser", 19),
-           "side": ("Tornado Fist", 30),
-           "up": ("Thruster", 5),
-           "down": ("Sweep The Floor", 29),
-           "final":("Ultra Laser 7000", 70)
-         },
-       "description": "A heavyweight hard - hitter... but he's a robot"
+    "R.O.B.": {
+        "hp": 100,
+        "speed": 1.1,
+        "moves": {
+            "neutral": ("Charger Laser", 19),
+            "side": ("Tornado Fist", 30),
+            "up": ("Thruster", 5),
+            "down": ("Sweep The Floor", 29),
+            "final": ("Ultra Laser 7000", 70)
+        },
+        "description": "A heavyweight hard - hitter... but he's a robot"
+    },
+
+    "Terry": {
+        "hp": 100,
+        "speed": 1.0,
+        "moves": {
+            "neutral": ("Power Wave", 10),
+            "side": ("Burn Knuckle", 18),
+            "up": ("Rising Tackle", 14),
+            "down": ("Crack Counter", 12),
+            "power_geyser": ("Power Geyser", 30),
+            "buster_wolf": ("Buster Wolf", 35),
+            "final": ("Triple Geyser", 65)
+        },
+        "description": "The Wolf of Legends."
     }
-           
 }
 
 MOVE_KEYS = {
@@ -152,7 +166,9 @@ MOVE_KEYS = {
     "2": "side",
     "3": "up",
     "4": "down",
-    "5": "final"
+    "5": "final",
+    "6": "power_geyser",
+    "7": "buster_wolf"
 }
 
 FIGHTER_ART = {
@@ -166,7 +182,8 @@ FIGHTER_ART = {
     "Kirby": [" ___", " (O O)", " /|k|\\", " / \\"],
     "Ness": [" __", " (0 0)", " /|N|\\", " / \\"],
     "Kazuya": ["  __", " (0 0)", " /|K|\\", "  / \\"],
-    "R.O.B.": ["   __", " (O O)", " /|R|\\", "  / \\"]
+    "R.O.B.": ["   __", " (O O)", " /|R|\\", "  / \\"],
+    "Terry": ["  _=_", " (o_o)", " /|T|\\", "  / \\"]
 }
 
 
@@ -343,6 +360,16 @@ def show_status(player, enemy):
 
             print("KO PUNCH READY!")
 
+    if player["name"] == "Terry":
+
+        if player["hp"] <= 35:
+
+            print("GO! Meter: READY!")
+
+        else:
+
+            print("GO! Meter: OFF")
+
     print("=" * 60)
 
 
@@ -388,6 +415,19 @@ def choose_move(player):
             f"5. {moves['final'][0]}"
         )
 
+    if (
+        player["name"] == "Terry"
+        and player["hp"] <= 35
+    ):
+
+        print(
+            f"6. {moves['power_geyser'][0]} (GO!)"
+        )
+
+        print(
+            f"7. {moves['buster_wolf'][0]} (GO!)"
+        )
+
     while True:
 
         choice = input("> ")
@@ -403,6 +443,14 @@ def choose_move(player):
         ):
 
             return "final"
+
+        if (
+            player["name"] == "Terry"
+            and player["hp"] <= 35
+            and choice in ["6", "7"]
+        ):
+
+            return MOVE_KEYS[choice]
 
         print("Invalid move.")
 
@@ -470,6 +518,14 @@ def calculate_damage(player, move):
             print("KO PUNCH!!")
             print()
 
+    if fighter == "Terry":
+
+        if move in ["power_geyser", "buster_wolf"]:
+
+            print()
+            print("GO! MOVE ACTIVATED!")
+            print()
+
     return move_name, damage, critical
 
 
@@ -500,6 +556,17 @@ def enemy_choose_move(enemy, player):
         if random.random() < 0.60:
 
             return "final"
+
+    if (
+        enemy_name == "Terry"
+        and enemy["hp"] <= 35
+    ):
+
+        if random.random() < 0.70:
+
+            return random.choice(
+                ["power_geyser", "buster_wolf"]
+            )
 
     if (
         enemy_name == "Little Mac"
