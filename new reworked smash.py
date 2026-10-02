@@ -149,13 +149,13 @@ CHARACTERS = {
         "hp": 100,
         "speed": 1.0,
         "moves": {
-            "neutral": ("Power Wave", 10),
-            "side": ("Burn Knuckle", 18),
-            "up": ("Rising Tackle", 14),
-            "down": ("Crack Counter", 12),
-            "power_geyser": ("Power Geyser", 30),
-            "buster_wolf": ("Buster Wolf", 35),
-            "final": ("Triple Geyser", 65)
+            "neutral": ("Power Wave", 9),
+            "side": ("Burn Knuckle", 19),
+            "up": ("Rising Tackle", 15),
+            "down": ("Crack Counter", 14),
+            "power_geyser": ("Power Geyser", 40),
+            "buster_wolf": ("Buster Wolf", 48),
+            "final": ("Triple Geyser", 68)
         },
         "description": "The Wolf of Legends."
     }
@@ -190,11 +190,12 @@ FIGHTER_ART = {
 def title():
 
     print(r"""
-  _____ _   _ ____  _____ ____    ____  __  __    _    ____  _
- / ____| | | |  _ \| ____|  _ \  / ___||  \/  |  / \  / ___|| |__
- \___ \| | | | |_) |  _| | |_) | \___ \| |\/| | / _ \ \___ \| '_ \
-  ___) | |_| |  __/| |___|  _ <   ___) | |  | |/ ___ \ ___) | | | |
- |____/ \___/|_|   |_____|_| \_\ |____/|_|  |_/_/   \_\____/|_| |_|
+ ___ _   _ ___  ___ ___   ___ __  __  _   ___ _  _ 
+/ __| | | | _ \| __| _ \ / __|  \/  |/_\ / __| || |
+\__ \ |_| |  _/| _||   / \__ \ |\/| / _ \\__ \ __ |
+|___/\___/|_|  |___|_|_\ |___/_|  |/_/ \_\___/_||_|
+
+ 
 """)
 
     print("                         Python Edition")
@@ -1139,7 +1140,7 @@ def battle(player_name):
 
     if player["hp"] > 0:
 
-        print("VICTORY!")
+        print("GAME!")
 
         print()
 
@@ -1151,7 +1152,7 @@ def battle(player_name):
 
     else:
 
-        print("DEFEAT!")
+        print("GAME!")
 
         print()
 
