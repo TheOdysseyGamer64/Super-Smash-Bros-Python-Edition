@@ -42,6 +42,12 @@ Cloud's **Limit Gauge** charges during battle. Reach **100%** to activate **Limi
 
 Build Little Mac's **KO Meter** to **100%** and unlock the devastating **KO Punch**.
 
+### Terry's GO! Mechanic
+
+Terry enters his GO! state when his HP drops below 35.
+
+When active, powerful GO! moves become available, including Power Geyser and Buster Wolf.
+
 ## Requirements and How to Play
 
 ### Requirements
