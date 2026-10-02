@@ -1,10 +1,15 @@
 # Super Smash Bros. Python Edition 
 
+<img width="819" height="228" alt="image" src="https://github.com/user-attachments/assets/58b3c0e1-82a5-40f3-a936-f2b69e77bf77" />
+
+
 **Super Smash Bros. Python Edition** is a text-based fighting game inspired by the **Super Smash Bros.** series. I wanted to make a text-based game that truly represented one of my most favourite games... and here we are!
 
-<img width="513" height="720" alt="Recording2026-09-30182541-ezgif com-optimize" src="https://github.com/user-attachments/assets/b54aa9ae-1f20-47b7-95e6-5615c7b26ad6" />
+
+<img width="550" height="600" alt="Recording2026-10-02211455-ezgif com-speed" src="https://github.com/user-attachments/assets/a470d2cf-cafa-4523-b679-ff1f772c8ae7" />
 
 
+> **The latest version of this game is 1.3.0, and you can download it from the 'Releases' tab. Look for the release marked 1.3.0.**
 
 ## Features
 
@@ -13,10 +18,11 @@
 - Fighter-specific mechanics, including:
   - **Cloud:** Limit Gauge
   - **Little Mac:** KO Meter
+  - **Terry**: GO! Meter
 - Final Smash system
 - Damage and HP system
 - CPU opponents
-- Battle status display using ASCII
+- Battle arena and status display using ASCII
 - Fighter-specific moves and abilities
 - Simple terminal-based gameplay
 
@@ -75,7 +81,8 @@ Future updates may introduce:
 
 ### Starting the Game
 
-<img width="480" height="639" alt="image" src="https://github.com/user-attachments/assets/4e8620eb-7312-4db9-b779-d693d045c517" />
+<img width="550" height="600" alt="Recording2026-10-02211455-ezgif com-speed" src="https://github.com/user-attachments/assets/a470d2cf-cafa-4523-b679-ff1f772c8ae7" />
+
 
 
 
@@ -83,7 +90,8 @@ When you first load up the game in the terminal, it looks like this.
 
 ### Fighters Without Special Mechanics
 
-<img width="800" height="405" alt="image" src="https://github.com/user-attachments/assets/dac5a2e1-410b-4897-b2dc-8ebe1205d661" />
+<img width="500" height="400" alt="image" src="https://github.com/user-attachments/assets/cc1cc7b0-8190-4972-a55e-538e6111003a" />
+
 
 
 Characters without special mechanics won't have an extra meter to charge.
@@ -97,10 +105,11 @@ However, fighters with special mechanics will have a meter to charge to unlock t
 
 ### Fully Charged Mechanics
 
-<img width="600" height="450" alt="image" src="https://github.com/user-attachments/assets/3ac722e4-b959-471c-98ae-52d8752dfd41" />
+<img width="600" height="700" alt="image" src="https://github.com/user-attachments/assets/a9409d90-faea-49ed-b9cb-6b1a3b3094a9" />
 
 
-The mechanic will appear in the moveset once the meter is fully charged (**100%**).
+
+The mechanic will appear in the moveset once the meter is fully charged (**100%**) or when, in Terry's case, his HP drops below 35.
 
 
 Thanks for playing **Super Smash Bros. Python Edition**!
