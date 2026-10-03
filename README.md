@@ -8,8 +8,11 @@
 
 <img width="550" height="600" alt="Recording2026-10-02211455-ezgif com-speed" src="https://github.com/user-attachments/assets/a470d2cf-cafa-4523-b679-ff1f772c8ae7" />
 
+## Download
 
-> **The latest version of this game is 1.3.0, and you can download it from the 'Releases' tab. Look for the release marked 1.3.0.**
+> **The latest version of this game is 1.3.0, and you can download it from the 'Releases' tab. Look for the release marked 1.3.0. Or you can download it here:**
+
+[Download Super Smash Bros. Python Edition v1.3.0](https://github.com/TheOdysseyGamer64/Super-Smash-Bros-Python-Edition/archive/refs/tags/1.3.0.zip)
 
 ## Features
 
