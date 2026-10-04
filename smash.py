@@ -774,12 +774,6 @@ def battle_round(player, enemy, round_number):
     else:
         enemy_move = None
 
-    if player_action == "block":
-        print(f"{player['name']} is blocking!")
-
-    if enemy_action == "block":
-        print(f"{enemy['name']} is blocking!")
-
     round_start_hp = player["hp"]
 
     magnet_recovery = 0
@@ -911,6 +905,8 @@ def battle_round(player, enemy, round_number):
 
             if enemy_action == "block":
 
+                print(f"{enemy['name']} is blocking!")
+
                 if (
                     player["name"] == "Cloud"
                     and player_move == "down"
@@ -1020,6 +1016,8 @@ def battle_round(player, enemy, round_number):
             damage = enemy_damage
 
             if player_action == "block":
+
+                print(f"{player['name']} is blocking!")
 
                 if (
                     enemy["name"] == "Cloud"
