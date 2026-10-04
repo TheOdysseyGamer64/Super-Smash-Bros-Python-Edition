@@ -336,6 +336,8 @@ def create_fighter(name):
     return {
         "name": name,
         "hp": CHARACTERS[name]["hp"],
+        "speed": CHARACTERS[name]["speed"],
+        "stocks": 3,
         "final_meter": 0,
         "limit": 0,
         "ko_meter": 0,
@@ -507,7 +509,7 @@ def calculate_damage(player, move):
 
         return move_name, 0, False
 
-    damage += random.randint(-2, 2)
+    damage += random.randint(-1, 1)
 
     damage = max(damage, 1)
 
@@ -687,6 +689,69 @@ def enemy_choose_move(enemy, player):
     )
 
 
+
+def choose_action():
+
+    print()
+    print("Choose an action:")
+    print("1. Attack")
+    print("2. Block")
+
+    while True:
+
+        choice = input("> ")
+
+        if choice == "1":
+            return "attack"
+
+        if choice == "2":
+            return "block"
+
+        print("Invalid choice.")
+
+
+def enemy_choose_action():
+
+    if random.random() < 0.25:
+        return "block"
+
+    return "attack"
+
+
+def attack_breaks_block(attacker):
+
+    block_chance = 0.70 - (
+        (attacker["speed"] - 0.8) * 0.35
+    )
+
+    return random.random() > block_chance
+
+
+def apply_block_damage(damage, attacker, defender, move):
+
+    if (
+        defender["name"] == "Cloud"
+        and move == "down"
+    ):
+        pass
+
+    if (
+        attacker["name"] == "Cloud"
+        and move == "down"
+    ):
+        print("Limit Break was completely blocked!")
+        return 0
+
+    if attack_breaks_block(attacker):
+
+        print("The attack broke through the block!")
+        return damage
+
+    damage = max(damage // 2, 1)
+    print("The attack was blocked!")
+    return damage
+
+
 def battle_round(player, enemy, round_number):
 
     show_status(player, enemy)
@@ -695,12 +760,25 @@ def battle_round(player, enemy, round_number):
     print(f"ROUND {round_number}")
     print()
 
-    player_move = choose_move(player)
+    player_action = choose_action()
 
-    enemy_move = enemy_choose_move(
-        enemy,
-        player
-    )
+    if player_action == "attack":
+        player_move = choose_move(player)
+    else:
+        player_move = None
+
+    enemy_action = enemy_choose_action()
+
+    if enemy_action == "attack":
+        enemy_move = enemy_choose_move(enemy, player)
+    else:
+        enemy_move = None
+
+    if player_action == "block":
+        print(f"{player['name']} is blocking!")
+
+    if enemy_action == "block":
+        print(f"{enemy['name']} is blocking!")
 
     round_start_hp = player["hp"]
 
@@ -711,76 +789,77 @@ def battle_round(player, enemy, round_number):
         and player_move == "down"
     ):
 
+        maximum_hp = CHARACTERS["Ness"]["hp"]
+
         magnet_recovery = min(
             10,
-            75 - player["hp"]
+            maximum_hp - player["hp"]
         )
 
         player["hp"] += magnet_recovery
 
-    player_move_name, player_damage, critical = (
-        calculate_damage(
-            player,
-            player_move
-        )
-    )
+    if player_action == "attack":
 
-    enemy_move_name, enemy_damage, enemy_critical = (
-        calculate_damage(
-            enemy,
-            enemy_move
+        player_move_name, player_damage, critical = (
+            calculate_damage(
+                player,
+                player_move
+            )
         )
-    )
+
+    else:
+
+        player_move_name = None
+        player_damage = 0
+        critical = False
+
+    if enemy_action == "attack":
+
+        enemy_move_name, enemy_damage, enemy_critical = (
+            calculate_damage(
+                enemy,
+                enemy_move
+            )
+        )
+
+    else:
+
+        enemy_move_name = None
+        enemy_damage = 0
+        enemy_critical = False
 
     print()
 
-    if player_move == "final":
+    if player_action == "attack":
 
-        print("FINAL SMASH")
+        if (
+            player["name"] == "Ness"
+            and player_move == "down"
+        ):
 
-        print(
-            f"{player['name']} "
-            f"used {player_move_name}!"
-        )
+            print("You used Magnet!")
 
-        print(
-            f"It dealt "
-            f"{player_damage} damage!"
-        )
-
-    elif (
-        player["name"] == "Ness"
-        and player_move == "down"
-    ):
-
-        print("You used Magnet!")
-
-        if magnet_recovery > 0:
-
-            print(
-                f"Ness recovered "
-                f"{magnet_recovery} HP!"
-            )
+            if magnet_recovery > 0:
+                print(
+                    f"Ness recovered "
+                    f"{magnet_recovery} HP!"
+                )
+            else:
+                print("Ness is already at full HP!")
 
         else:
 
             print(
-                "Ness is already at full HP!"
+                f"You used "
+                f"{player_move_name}!"
             )
 
-    else:
-
-        print(
-            f"You used "
-            f"{player_move_name}!"
-        )
-
-        if critical:
-
-            print("CRITICAL HIT!")
+            if critical:
+                print("CRITICAL HIT!")
 
     if (
-        player["name"] == "Little Mac"
+        player_action == "attack"
+        and player["name"] == "Little Mac"
         and player_move == "down"
     ):
 
@@ -788,29 +867,19 @@ def battle_round(player, enemy, round_number):
             "Little Mac waits for an attack..."
         )
 
-        enemy_hits = (
-            random.random() < 0.80
-        )
-
-        if enemy_hits:
+        if random.random() < 0.80:
 
             player_hp_before = player["hp"]
 
-            print(
-                "Enemy landed the attack!"
-            )
+            print("Enemy landed the attack!")
 
             player["hp"] -= enemy_damage
 
             actual_damage = (
-                player_hp_before
-                - player["hp"]
+                player_hp_before - player["hp"]
             )
 
-            print(
-                "Slip Counter failed!"
-            )
-
+            print("Slip Counter failed!")
             print(
                 f"You took "
                 f"{actual_damage} damage!"
@@ -820,114 +889,106 @@ def battle_round(player, enemy, round_number):
 
             enemy_hp_before = enemy["hp"]
 
-            print(
-                "Enemy missed!"
-            )
+            print("Enemy missed!")
 
-            counter = 22
-
-            enemy["hp"] -= counter
+            enemy["hp"] -= 22
 
             actual_counter_damage = (
-                enemy_hp_before
-                - enemy["hp"]
+                enemy_hp_before - enemy["hp"]
             )
 
-            print(
-                "Slip Counter activated!"
-            )
-
+            print("Slip Counter activated!")
             print(
                 f"Enemy took "
                 f"{actual_counter_damage} damage!"
             )
 
-    else:
+    elif player_action == "attack":
 
-        enemy_hp_before = enemy["hp"]
+        if random.random() < 0.80:
 
-        if player_move == "final":
+            damage = player_damage
 
-            enemy["hp"] -= player_damage
+            if enemy_action == "block":
 
-            actual_damage = (
-                enemy_hp_before
-                - enemy["hp"]
-            )
+                if (
+                    player["name"] == "Cloud"
+                    and player_move == "down"
+                ):
+
+                    print(
+                        "Limit Break was "
+                        "completely blocked!"
+                    )
+
+                    damage = 0
+
+                elif attack_breaks_block(player):
+
+                    print(
+                        "The attack broke "
+                        "through the block!"
+                    )
+
+                else:
+
+                    damage = max(
+                        damage // 2,
+                        1
+                    )
+
+                    print(
+                        "The attack was blocked!"
+                    )
+
+            enemy["hp"] -= damage
 
             print(
                 f"Enemy took "
-                f"{actual_damage} damage!"
-            )
-
-        elif (
-            player["name"] == "Ness"
-            and player_move == "down"
-        ):
-
-            pass
-
-        elif random.random() < 0.80:
-
-            enemy["hp"] -= player_damage
-
-            actual_damage = (
-                enemy_hp_before
-                - enemy["hp"]
-            )
-
-            print(
-                f"Enemy took "
-                f"{actual_damage} damage!"
+                f"{max(damage, 0)} damage!"
             )
 
         else:
 
             print("You missed!")
 
-        if enemy["hp"] <= 0:
+    if enemy["hp"] <= 0:
 
-            enemy["hp"] = 0
+        enemy["hp"] = 0
 
-            player["final_meter"] = min(
-                player["final_meter"] + 20,
+        player["final_meter"] = min(
+            player["final_meter"] + 20,
+            100
+        )
+
+        if player["name"] == "Cloud":
+            player["limit"] = min(
+                player["limit"] + 25,
                 100
             )
 
-            if player["name"] == "Cloud":
-
-                player["limit"] = min(
-                    player["limit"] + 25,
-                    100
-                )
-
-            if player["name"] == "Little Mac":
-
-                player["ko_meter"] = min(
-                    player["ko_meter"] + 20,
-                    100
-                )
-
-            if player_move == "final":
-
-                player["used_final"] = True
-                player["final_meter"] = 0
-
-            input(
-                "\nPress ENTER to continue..."
+        if player["name"] == "Little Mac":
+            player["ko_meter"] = min(
+                player["ko_meter"] + 20,
+                100
             )
 
-            return
+        if player_move == "final":
+            player["used_final"] = True
+            player["final_meter"] = 0
 
-        print()
+        return "enemy"
+
+    print()
+
+    if enemy_action == "attack":
 
         print(
             f"Enemy used "
-            f"{enemy_move_name}"
+            f"{enemy_move_name}!"
         )
 
         if enemy_critical:
-
             print("Critical Hit!")
 
         if (
@@ -935,76 +996,70 @@ def battle_round(player, enemy, round_number):
             and enemy_move == "down"
         ):
 
+            maximum_hp = CHARACTERS["Ness"]["hp"]
+
             enemy_recovery = min(
                 10,
-                75 - enemy["hp"]
+                maximum_hp - enemy["hp"]
             )
 
             enemy["hp"] += enemy_recovery
 
             if enemy_recovery > 0:
-
                 print(
                     f"Ness recovered "
                     f"{enemy_recovery} HP!"
                 )
-
             else:
-
                 print(
                     "Ness is already at full HP!"
                 )
 
-        elif enemy_move == "final":
-
-            print()
-
-            player_hp_before = player["hp"]
-
-            if random.random() < 0.80:
-
-                player["hp"] -= enemy_damage
-
-                actual_damage = (
-                    round_start_hp
-                    - player["hp"]
-                )
-
-                print(
-                    f"You took "
-                    f"{actual_damage} damage!"
-                )
-
-            else:
-
-                print("Enemy missed!")
-
         elif random.random() < 0.80:
 
-            player_hp_before = player["hp"]
+            damage = enemy_damage
 
-            player["hp"] -= enemy_damage
+            if player_action == "block":
 
-            if (
-                player["name"] == "Ness"
-                and player_move == "down"
-            ):
+                if (
+                    enemy["name"] == "Cloud"
+                    and enemy_move == "down"
+                ):
 
-                actual_damage = (
-                    round_start_hp
-                    - player["hp"]
-                )
+                    print(
+                        "Limit Break was "
+                        "completely blocked!"
+                    )
 
-            else:
+                    damage = 0
 
-                actual_damage = (
-                    player_hp_before
-                    - player["hp"]
-                )
+                elif attack_breaks_block(enemy):
+
+                    print(
+                        "The attack broke "
+                        "through the block!"
+                    )
+
+                else:
+
+                    damage = max(
+                        damage // 2,
+                        1
+                    )
+
+                    print(
+                        "The attack was blocked!"
+                    )
+
+            player["hp"] -= damage
+
+            actual_damage = (
+                round_start_hp - player["hp"]
+            )
 
             print(
                 f"You took "
-                f"{actual_damage} damage!"
+                f"{max(actual_damage, 0)} damage!"
             )
 
         else:
@@ -1022,52 +1077,39 @@ def battle_round(player, enemy, round_number):
     )
 
     if player["name"] == "Cloud":
-
         player["limit"] = min(
             player["limit"] + 25,
             100
         )
 
     if enemy["name"] == "Cloud":
-
         enemy["limit"] = min(
             enemy["limit"] + 25,
             100
         )
 
     if player["name"] == "Little Mac":
-
         player["ko_meter"] = min(
             player["ko_meter"] + 20,
             100
         )
 
     if enemy["name"] == "Little Mac":
-
         enemy["ko_meter"] = min(
             enemy["ko_meter"] + 20,
             100
         )
 
     if player_move == "final":
-
         player["used_final"] = True
         player["final_meter"] = 0
 
     if enemy_move == "final":
-
         enemy["used_final"] = True
         enemy["final_meter"] = 0
 
-    player["hp"] = max(
-        0,
-        player["hp"]
-    )
-
-    enemy["hp"] = max(
-        0,
-        enemy["hp"]
-    )
+    player["hp"] = max(0, player["hp"])
+    enemy["hp"] = max(0, enemy["hp"])
 
     if (
         player["name"] == "Ness"
@@ -1075,28 +1117,26 @@ def battle_round(player, enemy, round_number):
         and player["hp"] > round_start_hp
     ):
 
-        net_recovery = (
-            player["hp"]
-            - round_start_hp
-        )
+        net_recovery = player["hp"] - round_start_hp
 
         if net_recovery > magnet_recovery:
-
             print(
                 f"Ness gained "
                 f"{net_recovery} HP overall!"
             )
 
     print()
-
     print(
         f"Final Smash Meter: "
         f"{player['final_meter']}%"
     )
 
-    input(
-        "\nPress ENTER to continue..."
-    )
+    input("\nPress ENTER to continue...")
+
+    if player["hp"] <= 0:
+        return "player"
+
+    return None
 
 
 def choose_enemy(player_name):
@@ -1126,68 +1166,101 @@ def choose_enemy(player_name):
 
 def battle(player_name):
 
-    enemy_name = choose_enemy(
-        player_name
-    )
+    enemy_name = choose_enemy(player_name)
 
-    player = create_fighter(
-        player_name
-    )
-
-    enemy = create_fighter(
-        enemy_name
-    )
+    player = create_fighter(player_name)
+    enemy = create_fighter(enemy_name)
 
     round_number = 1
 
-    while (
-        player["hp"] > 0
-        and enemy["hp"] > 0
-    ):
+    while player["stocks"] > 0 and enemy["stocks"] > 0:
 
-        battle_round(
+        result = battle_round(
             player,
             enemy,
             round_number
         )
+
+        if result == "enemy":
+
+            enemy["stocks"] -= 1
+
+            if enemy["stocks"] > 0:
+
+                print()
+                print(
+                    f"{enemy['name']} was KO'd!"
+                )
+                print(
+                    f"Stocks remaining: "
+                    f"{enemy['stocks']}"
+                )
+
+                enemy = create_fighter(
+                    enemy_name
+                )
+
+                print(
+                    f"{enemy['name']} respawned!"
+                )
+
+            else:
+
+                break
+
+        elif result == "player":
+
+            player["stocks"] -= 1
+
+            if player["stocks"] > 0:
+
+                print()
+                print(
+                    f"{player['name']} was KO'd!"
+                )
+                print(
+                    f"Stocks remaining: "
+                    f"{player['stocks']}"
+                )
+
+                player = create_fighter(
+                    player_name
+                )
+
+                print(
+                    f"{player['name']} respawned!"
+                )
+
+            else:
+
+                break
 
         round_number += 1
 
         time.sleep(0.5)
 
     print()
+    print("=" * 60)
 
-    print(
-        "=" * 60
-    )
-
-    if player["hp"] > 0:
+    if player["stocks"] > 0:
 
         print("GAME!")
-
         print()
-
         print(
-            f"{player['name']} "
-            f"defeated "
+            f"{player['name']} defeated "
             f"{enemy['name']}!"
         )
 
     else:
 
         print("GAME!")
-
         print()
-
         print(
-            f"{enemy['name']} "
-            f"defeated "
+            f"{enemy['name']} defeated "
             f"{player['name']}!"
         )
 
-    print(
-        "=" * 60
-    )
+    print("=" * 60)
 
 
 def play_again():
