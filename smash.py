@@ -509,9 +509,7 @@ def calculate_damage(player, move):
 
     damage += random.randint(-2, 2)
 
-    if damage < 1:
-
-        damage = 1
+    damage = max(damage, 1)
 
     if (
         fighter == "Luigi"
@@ -519,8 +517,8 @@ def calculate_damage(player, move):
         and random.randint(1, 5) == 1
     ):
 
-            damage *= 2
-            critical = True
+        damage *= 2
+        critical = True
 
     if (
         fighter == "Cloud"
@@ -528,12 +526,12 @@ def calculate_damage(player, move):
         and player["limit"] >= 100
     ):
 
-            damage += 10
-            player["limit"] = 0
+        damage += 10
+        player["limit"] = 0
 
-            print()
-            print("LIMIT BREAK!")
-            print()
+        print()
+        print("LIMIT BREAK!")
+        print()
 
     if (
         fighter == "Little Mac"
@@ -541,23 +539,23 @@ def calculate_damage(player, move):
         and move == "neutral"
     ):
 
-            move_name = "KO Punch"
-            damage = 32
+        move_name = "KO Punch"
+        damage = 32
 
-            player["ko_meter"] = 0
+        player["ko_meter"] = 0
 
-            print()
-            print("KO PUNCH!!")
-            print()
+        print()
+        print("KO PUNCH!!")
+        print()
 
     if (
         fighter == "Terry"
         and move in ["power_geyser", "buster_wolf"]
     ):
 
-            print()
-            print("GO! MOVE ACTIVATED!")
-            print()
+        print()
+        print("GO! MOVE ACTIVATED!")
+        print()
 
     return move_name, damage, critical
 
@@ -596,9 +594,9 @@ def enemy_choose_move(enemy, player):
         and random.random() < 0.70
     ):
 
-            return random.choice(
-                ["power_geyser", "buster_wolf"]
-            )
+        return random.choice(
+            ["power_geyser", "buster_wolf"]
+        )
 
     if (
         enemy_name == "Little Mac"
@@ -632,7 +630,7 @@ def enemy_choose_move(enemy, player):
         and random.random() < 0.65
     ):
 
-                return "down"
+        return "down"
 
     if (
         enemy_name == "Duck Hunt Duo"
@@ -640,7 +638,7 @@ def enemy_choose_move(enemy, player):
         and random.random() < 0.65
     ):
 
-                return "up"
+        return "up"
 
     if player["hp"] <= 30:
 
@@ -656,9 +654,9 @@ def enemy_choose_move(enemy, player):
 
         if strong_moves and random.random() < 0.70:
 
-                return random.choice(
-                    strong_moves
-                )
+            return random.choice(
+                strong_moves
+            )
 
     if enemy_name == "Ness" and enemy["hp"] > 50:
 
