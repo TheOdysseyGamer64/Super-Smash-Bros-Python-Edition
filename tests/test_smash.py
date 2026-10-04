@@ -1,6 +1,10 @@
-import pytest
-
-from smash import CHARACTERS, calculate_damage, create_fighter, fighter_sprite, health_bar
+from smash import (
+    CHARACTERS,
+    calculate_damage,
+    create_fighter,
+    fighter_sprite,
+    health_bar,
+)
 
 
 def test_every_fighter_has_required_stats_and_moves():
@@ -8,7 +12,7 @@ def test_every_fighter_has_required_stats_and_moves():
 
     assert CHARACTERS
 
-    for name, data in CHARACTERS.items():
+    for data in CHARACTERS.values():
         assert data["hp"] > 0
         assert data["speed"] > 0
         assert required_moves.issubset(data["moves"])
