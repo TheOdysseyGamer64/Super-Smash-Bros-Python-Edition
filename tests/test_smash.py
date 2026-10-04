@@ -25,6 +25,8 @@ def test_create_fighter_starts_correctly():
     assert fighter == {
         "name": "Cloud",
         "hp": 100,
+        "speed": 0.90,
+        "stocks": 3,
         "final_meter": 0,
         "limit": 0,
         "ko_meter": 0,
