@@ -10,9 +10,9 @@
 
 ## Download
 
-> **The latest version of this game is 1.3.0, and you can download it from the 'Releases' tab. Look for the release marked 1.3.0. Or you can download it here:**
+> **The latest version of this game is 1.4.0, and you can download it from the 'Releases' tab. Look for the release marked 1.4.0. Or you can download it here:**
 
-[Download Super Smash Bros. Python Edition v1.3.0](https://github.com/TheOdysseyGamer64/Super-Smash-Bros-Python-Edition/archive/refs/tags/1.3.0.zip)
+[Download Super Smash Bros. Python Edition v1.4.0](https://github.com/TheOdysseyGamer64/Super-Smash-Bros-Python-Edition/archive/refs/tags/1.4.0.zip)
 
 ## Features
 
