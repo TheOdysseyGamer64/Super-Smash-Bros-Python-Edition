@@ -539,7 +539,7 @@ def show_arena(player, enemy):
 
 def display_characters():
 
-    print("Choose your fighter\n")
+    print(f"{Fore.CYAN}Choose your fighter{Style.RESET_ALL}\n")
 
     number = 1
 
@@ -547,33 +547,35 @@ def display_characters():
         moves = stats["moves"]
         width = 38
 
-        print(f"{number}.")
-        print("╔" + "═" * width + "╗")
-        print("║" + fighter.upper().center(width) + "║")
-        print("╠" + "═" * width + "╣")
-        
-        print("║ " + f"HP:         {stats['hp']}".ljust(width - 1) + "║")
-        print("║ " + f"SPEED:      {stats['speed']}".ljust(width - 1) + "║")
-        print("║" + " " * width + "║")
+        print(f"{Fore.WHITE}{number}.{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}╔" + "═" * width + f"╗{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}║" + f"{Fore.YELLOW}{fighter.upper().center(width)}{Fore.CYAN}║{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}╠" + "═" * width + f"╣{Style.RESET_ALL}")
+
+        hp_line = f"HP:         {stats['hp']}".ljust(width - 1)
+        print(f"{Fore.CYAN}║ {Fore.GREEN}{hp_line}{Fore.CYAN}║{Style.RESET_ALL}")
+        speed_line = f"SPEED:      {stats['speed']}".ljust(width - 1)
+        print(f"{Fore.CYAN}║ {Fore.BLUE}{speed_line}{Fore.CYAN}║{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}║" + " " * width + f"║{Style.RESET_ALL}")
 
         for move_key in ["neutral", "side", "up", "down"]:
             move_name, damage = moves[move_key]
-            
+
             if len(move_name) > 23:
                 move_name = move_name[:20] + "..."
-                
+
             line = f"{move_name}".ljust(26) + f"{damage}".rjust(4)
-            print("║ " + line.ljust(width - 1) + "║")
+            print(f"{Fore.CYAN}║ {Fore.WHITE}{line.ljust(width - 1)}{Fore.CYAN}║{Style.RESET_ALL}")
 
         if fighter == "Terry":
-            print("║" + " " * width + "║")
-            print("║ " + "GO! at ≤35 HP".ljust(width - 1) + "║")
+            print(f"{Fore.CYAN}║" + " " * width + f"║{Style.RESET_ALL}")
+            print(f"{Fore.CYAN}║ {Fore.RED}{'GO! at ≤35 HP'.ljust(width - 1)}{Fore.CYAN}║{Style.RESET_ALL}")
             for move_key in ["power_geyser", "buster_wolf"]:
                 move_name, damage = moves[move_key]
                 line = f"{move_name}".ljust(26) + f"{damage}".rjust(4)
-                print("║ " + line.ljust(width - 1) + "║")
+                print(f"{Fore.CYAN}║ {Fore.WHITE}{line.ljust(width - 1)}{Fore.CYAN}║{Style.RESET_ALL}")
 
-        print("║" + " " * width + "║")
+        print(f"{Fore.CYAN}║" + " " * width + f"║{Style.RESET_ALL}")
 
         final_name, final_damage = moves["final"]
         final_label = f"Final: {final_name}"
@@ -582,14 +584,13 @@ def display_characters():
             final_label = final_label[:23] + "..."
 
         final_line = final_label.ljust(26) + f"{final_damage}".rjust(4)
-        print("║ " + final_line.ljust(width - 1) + "║")
+        print(f"{Fore.CYAN}║ {Fore.MAGENTA}{final_line.ljust(width - 1)}{Fore.CYAN}║{Style.RESET_ALL}")
 
-        print("╚" + "═" * width + "╝")
-        
-        print(f"  {stats['description']}\n")
+        print(f"{Fore.CYAN}╚" + "═" * width + f"╝{Style.RESET_ALL}")
+
+        print(f"  {Fore.WHITE}{stats['description']}{Style.RESET_ALL}\n")
 
         number += 1
-
 
 def choose_character():
 
