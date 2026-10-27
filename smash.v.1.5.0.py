@@ -706,7 +706,7 @@ def charge_round_resource(fighter):
 
     if name == "Kazuya":
         missing_hp = CHARACTERS[name]["hp"] - fighter["hp"]
-        gain_resource(fighter, min(25, 10 + missing_hp // 5))
+        gain_resource(fighter, min(25, 10 + (missing_hp + 4) // 5))
         return
 
     gain_resource(fighter)
