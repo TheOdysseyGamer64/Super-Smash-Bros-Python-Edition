@@ -650,6 +650,8 @@ def resource_value(fighter):
     key = config.get("key")
     if not key:
         return 0
+    if key in {"limit", "ko_meter"}:
+        return fighter.get(key, config.get("start", 0))
     return fighter.get("resources", {}).get(key, config.get("start", 0))
 
 
@@ -660,9 +662,15 @@ def gain_resource(fighter, amount=None):
     if not key:
         return 0
 
+    gain = config.get("gain_per_round", 0) if amount is None else amount
+    if key in {"limit", "ko_meter"}:
+        current = fighter.get(key, config.get("start", 0))
+        updated = min(config.get("max", current), max(0, current + max(0, gain)))
+        fighter[key] = updated
+        return updated - current
+
     resources = fighter.setdefault("resources", {})
     current = resources.get(key, config.get("start", 0))
-    gain = config.get("gain_per_round", 0) if amount is None else amount
     updated = min(config.get("max", current), max(0, current + max(0, gain)))
     resources[key] = updated
     return updated - current
@@ -675,6 +683,13 @@ def spend_resource(fighter, amount):
     if not key or amount < 0:
         return False
 
+    if key in {"limit", "ko_meter"}:
+        current = fighter.get(key, config.get("start", 0))
+        if current < amount:
+            return False
+        fighter[key] = current - amount
+        return True
+
     resources = fighter.setdefault("resources", {})
     current = resources.get(key, config.get("start", 0))
     if current < amount:
@@ -682,6 +697,32 @@ def spend_resource(fighter, amount):
 
     resources[key] = current - amount
     return True
+
+
+def charge_round_resource(fighter):
+    """Apply the configured between-round resource gain and Kazuya's rage gain."""
+    name = fighter["name"]
+    if name in {"Cloud", "Little Mac", "Terry"}:
+        return
+
+    if name == "Kazuya":
+        missing_hp = CHARACTERS[name]["hp"] - fighter["hp"]
+        gain_resource(fighter, min(25, 10 + missing_hp // 5))
+        return
+
+    gain_resource(fighter)
+
+
+def display_resource(fighter):
+    """Print the fighter's configured resource using the appropriate colour."""
+    config = CHARACTERS[fighter["name"]].get("resource", {})
+    key = config.get("key")
+    if not key or fighter["name"] in {"Cloud", "Little Mac", "Terry"}:
+        return
+
+    value = resource_value(fighter)
+    colour = Fore.CYAN
+    print(f"{config['label']}: {colour}{value}/{config['max']}{Style.RESET_ALL}")
 
 
 def show_status(player, enemy):
@@ -746,6 +787,7 @@ def show_status(player, enemy):
 
             print("GO! Meter: OFF")
 
+    display_resource(player)
     print("=" * 60)
 
 
@@ -851,6 +893,52 @@ def calculate_damage(player, move):
     damage += random.randint(-1, 1)
 
     damage = max(damage, 1)
+
+    # Resource-powered fighter mechanics.
+    if fighter == "Mario" and move == "neutral" and spend_resource(player, 1):
+        damage += 10
+        print("FIRE CHARGE! Empowered Fireball!")
+
+    elif fighter == "Luigi" and move == "side" and spend_resource(player, 1):
+        damage += 8
+        print("MISFIRE CHARGE! Green Missile powered up!")
+
+    elif fighter == "Sora" and move in {"side", "up", "down"}:
+        if spend_resource(player, 20):
+            damage += 8
+            print("MAGIC BOOST! Sora spends 20 Magic Points.")
+
+    elif fighter == "Mii Swordfighter" and move in {"side", "up"}:
+        if spend_resource(player, 1):
+            damage += 8
+            print("TECHNIQUE CHARGE! Special move empowered.")
+
+    elif fighter == "Duck Hunt Duo" and move in {"neutral", "side", "down"}:
+        if spend_resource(player, 1):
+            damage += 3
+            print("AMMO USED! Attack powered by the Ammo Supply.")
+        else:
+            damage = max(1, damage // 2)
+            print("OUT OF AMMO! Attack damage reduced.")
+
+    elif fighter == "Ness" and move in {"neutral", "side", "up"}:
+        if spend_resource(player, 15):
+            damage += 6
+            print("PSI BOOST! Ness spends 15 PSI Energy.")
+
+    elif fighter == "Kirby" and move != "down" and spend_resource(player, 1):
+        damage += 8
+        print("COPY CHARGE! Kirby powers up the attack.")
+
+    elif fighter == "R.O.B." and move in {"up", "down"}:
+        if spend_resource(player, 20):
+            damage += 8
+            print("THRUSTER BOOST! R.O.B. spends 20 Fuel.")
+
+    elif fighter == "Kazuya" and move == "down" and resource_value(player) >= 50:
+        spend_resource(player, 50)
+        damage += 15
+        print("RAGE DRIVE! Kazuya spends 50 Rage.")
 
     if (
         fighter == "Luigi"
@@ -1308,6 +1396,9 @@ def battle_round(player, enemy, round_number):
                 100
             )
 
+        charge_round_resource(player)
+        charge_round_resource(enemy)
+
         if player_move == "final":
             player["used_final"] = True
             player["final_meter"] = 0
@@ -1436,6 +1527,9 @@ def battle_round(player, enemy, round_number):
             enemy["ko_meter"] + 20,
             100
         )
+
+    charge_round_resource(player)
+    charge_round_resource(enemy)
 
     if player_move == "final":
         player["used_final"] = True
