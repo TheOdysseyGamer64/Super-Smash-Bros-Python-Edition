@@ -228,15 +228,15 @@ def show_status(player, enemy):
     print()
 
     print(
-        f"{player['name']} HP: "
+        f"${Fore.GREEN}{player['name']} HP: "
         f"{player['hp']} "
-        f"{health_bar(player)}"
+        f"${health_bar(player)}{Style.RESET_ALL}"
     )
 
     print(
-        f"{enemy['name']} HP: "
+        f"${Fore.RED}{enemy['name']} HP: "
         f"{enemy['hp']} "
-        f"{health_bar(enemy)}"
+        f"${health_bar(enemy)}{Style.RESET_ALL}"
     )
 
     print()
