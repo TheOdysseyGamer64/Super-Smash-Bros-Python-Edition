@@ -307,46 +307,6 @@ def display_resource(fighter):
     )
 
 
-def resource_value(fighter):
-    """Return the current value of a fighter's configured resource."""
-    config = CHARACTERS[fighter["name"]].get("resource", {})
-    key = config.get("key")
-    if not key:
-        return 0
-    return fighter.get("resources", {}).get(key, config.get("start", 0))
-
-
-def gain_resource(fighter, amount=None):
-    """Increase a configured resource without exceeding its maximum."""
-    config = CHARACTERS[fighter["name"]].get("resource", {})
-    key = config.get("key")
-    if not key:
-        return 0
-
-    resources = fighter.setdefault("resources", {})
-    current = resources.get(key, config.get("start", 0))
-    gain = config.get("gain_per_round", 0) if amount is None else amount
-    updated = min(config.get("max", current), max(0, current + max(0, gain)))
-    resources[key] = updated
-    return updated - current
-
-
-def spend_resource(fighter, amount):
-    """Spend resource only when enough is available; return success."""
-    config = CHARACTERS[fighter["name"]].get("resource", {})
-    key = config.get("key")
-    if not key or amount < 0:
-        return False
-
-    resources = fighter.setdefault("resources", {})
-    current = resources.get(key, config.get("start", 0))
-    if current < amount:
-        return False
-
-    resources[key] = current - amount
-    return True
-
-
 def show_status(player, enemy):
 
     print("=" * 60)
