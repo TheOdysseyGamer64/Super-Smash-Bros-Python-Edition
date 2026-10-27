@@ -410,6 +410,7 @@ def show_status(player, enemy):
             print("GO! Meter: OFF")
 
     display_resource(player)
+    display_resource(enemy)
     print("=" * 60)
 
 
