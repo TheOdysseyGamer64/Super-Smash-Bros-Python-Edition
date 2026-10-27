@@ -1,11 +1,10 @@
+import json
 import random
 import time
-
-import json
 from pathlib import Path
 
 try:
-    from colorama import Fore, Style, init as colorama_init
+    from colorama import Fore, Style, init as colorama_init  # noqa: I001
     colorama_init(autoreset=True)
 except ImportError:
     class _NoColor:
