@@ -121,7 +121,7 @@ def test_fighter_helpers_clamp_damage_and_healing():
 
     assert fighter.is_alive is True
     assert fighter.take_damage(20) == 75
-    assert fighter.heal(10) == 85
-    assert fighter.heal(999) == 95
+    assert fighter.heal(10) == 10
+    assert fighter.heal(999) == 10
     assert fighter.take_damage(999) == 0
     assert fighter.is_alive is False
