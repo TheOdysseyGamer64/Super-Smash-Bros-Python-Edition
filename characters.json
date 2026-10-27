@@ -24,7 +24,14 @@
                 55
             ]
         },
-        "description": "A mercenary who grows stronger through his Limit Gauge."
+        "description": "A mercenary who grows stronger through his Limit Gauge.",
+        "resource": {
+            "key": "limit",
+            "label": "Limit Gauge",
+            "max": 100,
+            "start": 0,
+            "gain_per_round": 25
+        }
     },
     "Mario": {
         "hp": 95,
@@ -51,7 +58,14 @@
                 65
             ]
         },
-        "description": "Nintendo's famous plumber."
+        "description": "Nintendo's famous plumber.",
+        "resource": {
+            "key": "fire_charge",
+            "label": "Fire Charge",
+            "max": 3,
+            "start": 0,
+            "gain_per_round": 1
+        }
     },
     "Luigi": {
         "hp": 92,
@@ -78,7 +92,14 @@
                 52
             ]
         },
-        "description": "A timid fighter with surprising power."
+        "description": "A timid fighter with surprising power.",
+        "resource": {
+            "key": "misfire_charge",
+            "label": "Misfire Charge",
+            "max": 3,
+            "start": 0,
+            "gain_per_round": 1
+        }
     },
     "Sora": {
         "hp": 97,
@@ -105,7 +126,14 @@
                 47
             ]
         },
-        "description": "The Keyblade wielder."
+        "description": "The Keyblade wielder.",
+        "resource": {
+            "key": "magic_points",
+            "label": "Magic Points",
+            "max": 100,
+            "start": 50,
+            "gain_per_round": 10
+        }
     },
     "Mii Swordfighter": {
         "hp": 90,
@@ -132,7 +160,14 @@
                 32
             ]
         },
-        "description": "A balanced sword fighter."
+        "description": "A balanced sword fighter.",
+        "resource": {
+            "key": "technique_charges",
+            "label": "Technique Charges",
+            "max": 3,
+            "start": 1,
+            "gain_per_round": 1
+        }
     },
     "Little Mac": {
         "hp": 90,
@@ -159,7 +194,14 @@
                 65
             ]
         },
-        "description": "A fearless boxer with devastating punches."
+        "description": "A fearless boxer with devastating punches.",
+        "resource": {
+            "key": "ko_meter",
+            "label": "KO Meter",
+            "max": 100,
+            "start": 0,
+            "gain_per_round": 20
+        }
     },
     "Duck Hunt Duo": {
         "hp": 90,
@@ -186,7 +228,14 @@
                 52
             ]
         },
-        "description": "A silly duo of a dog and a duck."
+        "description": "A silly duo of a dog and a duck.",
+        "resource": {
+            "key": "ammo",
+            "label": "Ammo Supply",
+            "max": 3,
+            "start": 3,
+            "gain_per_round": 1
+        }
     },
     "Ness": {
         "hp": 75,
@@ -213,7 +262,14 @@
                 47
             ]
         },
-        "description": "A village boy who possesses ESPER powers."
+        "description": "A village boy who possesses ESPER powers.",
+        "resource": {
+            "key": "psi_energy",
+            "label": "PSI Energy",
+            "max": 100,
+            "start": 50,
+            "gain_per_round": 10
+        }
     },
     "Kirby": {
         "hp": 70,
@@ -240,7 +296,14 @@
                 65
             ]
         },
-        "description": "A pink blob."
+        "description": "A pink blob.",
+        "resource": {
+            "key": "copy_charge",
+            "label": "Copy Charge",
+            "max": 3,
+            "start": 0,
+            "gain_per_round": 1
+        }
     },
     "Kazuya": {
         "hp": 97,
@@ -267,7 +330,14 @@
                 66
             ]
         },
-        "description": "A mercenary seeking revenge transforming into an all-powerful demon"
+        "description": "A mercenary seeking revenge transforming into an all-powerful demon",
+        "resource": {
+            "key": "rage",
+            "label": "Rage Meter",
+            "max": 100,
+            "start": 0,
+            "gain_per_round": 0
+        }
     },
     "R.O.B.": {
         "hp": 100,
@@ -294,7 +364,14 @@
                 70
             ]
         },
-        "description": "A heavyweight hard - hitter... but he's a robot"
+        "description": "A heavyweight hard - hitter... but he's a robot",
+        "resource": {
+            "key": "fuel",
+            "label": "Fuel",
+            "max": 100,
+            "start": 100,
+            "gain_per_round": 10
+        }
     },
     "Terry": {
         "hp": 100,
@@ -329,6 +406,13 @@
                 68
             ]
         },
-        "description": "The Wolf of Legends."
+        "description": "The Wolf of Legends.",
+        "resource": {
+            "key": "go",
+            "label": "GO!",
+            "max": 100,
+            "start": 0,
+            "gain_per_round": 0
+        }
     }
 }

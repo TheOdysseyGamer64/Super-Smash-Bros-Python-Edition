@@ -1,9 +1,13 @@
 from smash import (
     CHARACTERS,
     calculate_damage,
+    charge_round_resource,
     create_fighter,
     fighter_sprite,
+    gain_resource,
     health_bar,
+    resource_value,
+    spend_resource,
 )
 
 
@@ -30,6 +34,7 @@ def test_create_fighter_starts_correctly():
         "final_meter": 0,
         "limit": 0,
         "ko_meter": 0,
+        "resources": {"limit": 0},
         "used_final": False,
     }
 
@@ -125,3 +130,80 @@ def test_fighter_helpers_clamp_damage_and_healing():
     assert fighter.heal(999) == 10
     assert fighter.take_damage(999) == 0
     assert fighter.is_alive is False
+
+
+def test_resource_helpers_enforce_caps_and_spending():
+    fighter = create_fighter("Mario")
+
+    assert resource_value(fighter) == 0
+    assert gain_resource(fighter, 2) == 2
+    assert gain_resource(fighter, 99) == 1
+    assert resource_value(fighter) == 3
+    assert spend_resource(fighter, 2) is True
+    assert resource_value(fighter) == 1
+    assert spend_resource(fighter, 2) is False
+    assert resource_value(fighter) == 1
+
+
+def test_mario_fire_charge_empowers_fireball(monkeypatch):
+    monkeypatch.setattr("smash.random.randint", lambda a, b: 0)
+    fighter = create_fighter("Mario")
+    gain_resource(fighter, 1)
+
+    move_name, damage, _ = calculate_damage(fighter, "neutral")
+
+    assert move_name == "Fireball"
+    assert damage == 18
+    assert resource_value(fighter) == 0
+
+
+def test_sora_spends_magic_points_to_boost_special_move(monkeypatch):
+    monkeypatch.setattr("smash.random.randint", lambda a, b: 0)
+    fighter = create_fighter("Sora")
+
+    move_name, damage, _ = calculate_damage(fighter, "side")
+
+    assert move_name == "Sonic Blade"
+    assert damage == 25
+    assert resource_value(fighter) == 30
+
+
+def test_round_resource_gain_and_kazuya_rage(monkeypatch):
+    mario = create_fighter("Mario")
+    charge_round_resource(mario)
+    assert resource_value(mario) == 1
+
+    kazuya = create_fighter("Kazuya")
+    kazuya["hp"] = 50
+    charge_round_resource(kazuya)
+    assert resource_value(kazuya) == 20
+
+
+def test_kazuya_rage_drive_spends_rage_and_boosts_damage(monkeypatch):
+    monkeypatch.setattr("smash.random.randint", lambda a, b: 0)
+    fighter = create_fighter("Kazuya")
+    gain_resource(fighter, 50)
+
+    move_name, damage, _ = calculate_damage(fighter, "down")
+
+    assert move_name == "Hell's Door"
+    assert damage == 48
+    assert resource_value(fighter) == 0
+
+
+def test_all_fighters_have_valid_resource_definitions():
+    for name, data in CHARACTERS.items():
+        config = data["resource"]
+        fighter = create_fighter(name)
+        assert config["key"]
+        assert config["label"]
+        assert config["max"] > 0
+        assert 0 <= config["start"] <= config["max"]
+        assert resource_value(fighter) == config["start"]
+
+
+def test_resource_gains_never_exceed_configured_maximum():
+    for name, data in CHARACTERS.items():
+        fighter = create_fighter(name)
+        gain_resource(fighter, data["resource"]["max"] * 2)
+        assert resource_value(fighter) <= data["resource"]["max"]

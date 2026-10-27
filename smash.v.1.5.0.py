@@ -1,0 +1,1776 @@
+import json
+import random
+import time
+from pathlib import Path
+
+try:
+    from colorama import Fore, Style, init as colorama_init  # noqa: I001
+    colorama_init(autoreset=True)
+except ImportError:
+    class _NoColor:
+        def __getattr__(self, _name):
+            return ""
+    Fore = Style = _NoColor()
+
+# Character data is embedded so this game runs as a single Python file.
+CHARACTERS = json.loads(r'''{
+    "Cloud": {
+        "hp": 100,
+        "speed": 0.9,
+        "moves": {
+            "neutral": [
+                "Slash",
+                5
+            ],
+            "side": [
+                "Cross Slash",
+                15
+            ],
+            "up": [
+                "Climhazzard",
+                10
+            ],
+            "down": [
+                "Limit Break",
+                18
+            ],
+            "final": [
+                "Omnislash Ver. 5",
+                55
+            ]
+        },
+        "description": "A mercenary who grows stronger through his Limit Gauge.",
+        "resource": {
+            "key": "limit",
+            "label": "Limit Gauge",
+            "max": 100,
+            "start": 0,
+            "gain_per_round": 25
+        }
+    },
+    "Mario": {
+        "hp": 95,
+        "speed": 0.95,
+        "moves": {
+            "neutral": [
+                "Fireball",
+                8
+            ],
+            "side": [
+                "Cape",
+                15
+            ],
+            "up": [
+                "Super Jump Punch",
+                14
+            ],
+            "down": [
+                "F.L.U.D.D.",
+                10
+            ],
+            "final": [
+                "Mario Finale",
+                65
+            ]
+        },
+        "description": "Nintendo's famous plumber.",
+        "resource": {
+            "key": "fire_charge",
+            "label": "Fire Charge",
+            "max": 3,
+            "start": 0,
+            "gain_per_round": 1
+        }
+    },
+    "Luigi": {
+        "hp": 92,
+        "speed": 0.95,
+        "moves": {
+            "neutral": [
+                "Fireball",
+                5
+            ],
+            "side": [
+                "Green Missile",
+                29
+            ],
+            "up": [
+                "Super Jump Punch",
+                15
+            ],
+            "down": [
+                "Luigi Cyclone",
+                20
+            ],
+            "final": [
+                "Poltergust G-00",
+                52
+            ]
+        },
+        "description": "A timid fighter with surprising power.",
+        "resource": {
+            "key": "misfire_charge",
+            "label": "Misfire Charge",
+            "max": 3,
+            "start": 0,
+            "gain_per_round": 1
+        }
+    },
+    "Sora": {
+        "hp": 97,
+        "speed": 0.93,
+        "moves": {
+            "neutral": [
+                "Keyblade Slash",
+                16
+            ],
+            "side": [
+                "Sonic Blade",
+                17
+            ],
+            "up": [
+                "Aerial Sweep",
+                30
+            ],
+            "down": [
+                "Magic Burst",
+                20
+            ],
+            "final": [
+                "Sealing the Keyhole",
+                47
+            ]
+        },
+        "description": "The Keyblade wielder.",
+        "resource": {
+            "key": "magic_points",
+            "label": "Magic Points",
+            "max": 100,
+            "start": 50,
+            "gain_per_round": 10
+        }
+    },
+    "Mii Swordfighter": {
+        "hp": 90,
+        "speed": 1,
+        "moves": {
+            "neutral": [
+                "Jab Combo",
+                5
+            ],
+            "side": [
+                "Gale Strike",
+                11
+            ],
+            "up": [
+                "Skyward Slash Dash",
+                10
+            ],
+            "down": [
+                "Blade Counter",
+                13
+            ],
+            "final": [
+                "Final Edge",
+                32
+            ]
+        },
+        "description": "A balanced sword fighter.",
+        "resource": {
+            "key": "technique_charges",
+            "label": "Technique Charges",
+            "max": 3,
+            "start": 1,
+            "gain_per_round": 1
+        }
+    },
+    "Little Mac": {
+        "hp": 90,
+        "speed": 1.1,
+        "moves": {
+            "neutral": [
+                "Straight Lunge",
+                20
+            ],
+            "side": [
+                "Jolt Haymaker",
+                28
+            ],
+            "up": [
+                "Rising Uppercut",
+                10
+            ],
+            "down": [
+                "Slip Counter",
+                0
+            ],
+            "final": [
+                "Giga Mac",
+                65
+            ]
+        },
+        "description": "A fearless boxer with devastating punches.",
+        "resource": {
+            "key": "ko_meter",
+            "label": "KO Meter",
+            "max": 100,
+            "start": 0,
+            "gain_per_round": 20
+        }
+    },
+    "Duck Hunt Duo": {
+        "hp": 90,
+        "speed": 1.5,
+        "moves": {
+            "neutral": [
+                "Can",
+                13
+            ],
+            "side": [
+                "8-bit Frisbee",
+                20
+            ],
+            "up": [
+                "the duck",
+                0
+            ],
+            "down": [
+                "Gunman",
+                16
+            ],
+            "final": [
+                "Firing Squad",
+                52
+            ]
+        },
+        "description": "A silly duo of a dog and a duck.",
+        "resource": {
+            "key": "ammo",
+            "label": "Ammo Supply",
+            "max": 3,
+            "start": 3,
+            "gain_per_round": 1
+        }
+    },
+    "Ness": {
+        "hp": 75,
+        "speed": 1.5,
+        "moves": {
+            "neutral": [
+                "PK Spark",
+                30
+            ],
+            "side": [
+                "PK Fire",
+                25
+            ],
+            "up": [
+                "PK Thunder",
+                5
+            ],
+            "down": [
+                "Magnet",
+                0
+            ],
+            "final": [
+                "PK Starstorm",
+                47
+            ]
+        },
+        "description": "A village boy who possesses ESPER powers.",
+        "resource": {
+            "key": "psi_energy",
+            "label": "PSI Energy",
+            "max": 100,
+            "start": 50,
+            "gain_per_round": 10
+        }
+    },
+    "Kirby": {
+        "hp": 70,
+        "speed": 1.7,
+        "moves": {
+            "neutral": [
+                "Inhaler of Doom and Despair",
+                3
+            ],
+            "side": [
+                "Flame Hammer",
+                27
+            ],
+            "up": [
+                "Blue Blade",
+                15
+            ],
+            "down": [
+                "Shapeshifter",
+                27
+            ],
+            "final": [
+                "Rainbow Finisher",
+                65
+            ]
+        },
+        "description": "A pink blob.",
+        "resource": {
+            "key": "copy_charge",
+            "label": "Copy Charge",
+            "max": 3,
+            "start": 0,
+            "gain_per_round": 1
+        }
+    },
+    "Kazuya": {
+        "hp": 97,
+        "speed": 0.8,
+        "moves": {
+            "neutral": [
+                "Laser Eye",
+                10
+            ],
+            "side": [
+                "Phantom Fist",
+                14
+            ],
+            "up": [
+                "Devil Ascension",
+                7
+            ],
+            "down": [
+                "Hell's Door",
+                33
+            ],
+            "final": [
+                "Laser Eye Galore",
+                66
+            ]
+        },
+        "description": "A mercenary seeking revenge transforming into an all-powerful demon",
+        "resource": {
+            "key": "rage",
+            "label": "Rage Meter",
+            "max": 100,
+            "start": 0,
+            "gain_per_round": 0
+        }
+    },
+    "R.O.B.": {
+        "hp": 100,
+        "speed": 1.1,
+        "moves": {
+            "neutral": [
+                "Charger Laser",
+                19
+            ],
+            "side": [
+                "Tornado Fist",
+                30
+            ],
+            "up": [
+                "Thruster",
+                5
+            ],
+            "down": [
+                "Sweep The Floor",
+                29
+            ],
+            "final": [
+                "Ultra Laser 7000",
+                70
+            ]
+        },
+        "description": "A heavyweight hard - hitter... but he's a robot",
+        "resource": {
+            "key": "fuel",
+            "label": "Fuel",
+            "max": 100,
+            "start": 100,
+            "gain_per_round": 10
+        }
+    },
+    "Terry": {
+        "hp": 100,
+        "speed": 1,
+        "moves": {
+            "neutral": [
+                "Power Wave",
+                9
+            ],
+            "side": [
+                "Burn Knuckle",
+                19
+            ],
+            "up": [
+                "Rising Tackle",
+                15
+            ],
+            "down": [
+                "Crack Counter",
+                14
+            ],
+            "power_geyser": [
+                "Power Geyser",
+                40
+            ],
+            "buster_wolf": [
+                "Buster Wolf",
+                48
+            ],
+            "final": [
+                "Triple Geyser",
+                68
+            ]
+        },
+        "description": "The Wolf of Legends.",
+        "resource": {
+            "key": "go",
+            "label": "GO!",
+            "max": 100,
+            "start": 0,
+            "gain_per_round": 0
+        }
+    }
+}''')
+
+MOVE_KEYS = {
+    "1": "neutral",
+    "2": "side",
+    "3": "up",
+    "4": "down",
+    "5": "final",
+    "6": "power_geyser",
+    "7": "buster_wolf"
+}
+
+FIGHTER_ART = {
+    "Cloud":            ["   _//  ", " (o_o)//", " /|_|// ", " _/ \\_  "],
+    "Mario":            ["  ___   ", " /_M_\\  ", " (o_o)  ", " _/ \\_  "],
+    "Luigi":            ["  ___   ", " /_L_\\  ", " (-_-)  ", " _/ \\_  "],
+    "Sora":             ["  \\m/   ", " (o_o)-O", " /|_|\\ |", " _/ \\_ +"],
+    "Mii Swordfighter": ["  ___   ", " (^-^)-/", " /|_|\\/ ", " _/ \\_  "],
+    "Little Mac":       ["  _|_   ", " (o_o)  ", " 0|_|0  ", " _/ \\_  "],
+    "Duck Hunt Duo":    [" \\( )_  ", " (o_o ) ", " ==m_m_ ", "  \"  \"  "],
+    "Ness":             [" d___   ", " (o_o)  ", " /|_|\\  ", " _/ \\_  "],
+    "Kirby":            ["        ", "  ___   ", " /(o)\\  ", "  \" \"   "],
+    "Kazuya":           [" \\|/|/  ", " (>_<)  ", " /|_|\\  ", " _/ \\_  "],
+    "R.O.B.":           ["  [o]   ", " (ooo)  ", " =[|]=  ", " /___\\  "],
+    "Terry":            [" |___|  ", " (o_o)  ", " /|_|\\  ", " _/ \\_  "]
+}
+
+ 
+class Fighter(dict):
+    """Runtime fighter state with reusable combat helpers."""
+
+    def take_damage(self, amount):
+        self["hp"] = max(0, self["hp"] - max(0, amount))
+        return self["hp"]
+
+    def heal(self, amount, maximum=None):
+        cap = maximum if maximum is not None else CHARACTERS[self["name"]]["hp"]
+        recovered = min(max(0, amount), max(0, cap - self["hp"]))
+        self["hp"] += recovered
+        return recovered
+
+    @property
+    def is_alive(self):
+        return self["hp"] > 0
+
+
+def title():
+
+    print(r"""
+ ___ _   _ ___  ___ ___   ___ __  __  _   ___ _  _ 
+/ __| | | | _ \| __| _ \ / __|  \/  |/_\ / __| || |
+\__ \ |_| |  _/| _||   / \__ \ |\/| / _ \\__ \ __ |
+|___/\___/|_|  |___|_|_\ |___/_|  |/_/ \_\___/_||_|
+
+ 
+""")
+    print("               Python Edition")
+    print()
+
+
+def health_bar(fighter):
+
+    maximum = CHARACTERS[fighter["name"]]["hp"]
+    filled = round(20 * fighter["hp"] / maximum)
+
+    return "[" + "#" * filled + "." * (20 - filled) + "]"
+
+
+def fighter_sprite(name):
+
+    return FIGHTER_ART.get(
+        name,
+        ["  ___   ", " (o_o)  ", " /|_|\\  ", " _/ \\_  "]
+    )
+
+
+def show_arena(player, enemy):
+
+    player_art = fighter_sprite(player["name"])
+    enemy_art = fighter_sprite(enemy["name"])
+
+    print("+----------------------------------------------------------+")
+    print(
+        f"| {player['name']:<22} VS "
+        f"{enemy['name']:<22}         |"
+    )
+    print("|                                                          |")
+
+    for player_line, enemy_line in zip(
+        player_art,
+        enemy_art
+    ):
+
+        print(
+            f"| {player_line:<25}      "
+            f"{enemy_line:>15}           |"
+        )
+
+    print(
+        "|___________________________      _________________________|"
+    )
+
+    print(
+        " |__________________________/\\____/\\______________________|"
+    )
+
+
+def display_characters():
+
+    print(f"{Fore.CYAN}Choose your fighter{Style.RESET_ALL}\n")
+
+    number = 1
+
+    for fighter, stats in CHARACTERS.items():
+        moves = stats["moves"]
+        width = 38
+
+        print(f"{Fore.WHITE}{number}.{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}╔" + "═" * width + f"╗{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}║" + f"{Fore.YELLOW}{fighter.upper().center(width)}{Fore.CYAN}║{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}╠" + "═" * width + f"╣{Style.RESET_ALL}")
+
+        hp_line = f"HP:         {stats['hp']}".ljust(width - 1)
+        print(f"{Fore.CYAN}║ {Fore.GREEN}{hp_line}{Fore.CYAN}║{Style.RESET_ALL}")
+        speed_line = f"SPEED:      {stats['speed']}".ljust(width - 1)
+        print(f"{Fore.CYAN}║ {Fore.BLUE}{speed_line}{Fore.CYAN}║{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}║" + " " * width + f"║{Style.RESET_ALL}")
+
+        for move_key in ["neutral", "side", "up", "down"]:
+            move_name, damage = moves[move_key]
+
+            if len(move_name) > 23:
+                move_name = move_name[:20] + "..."
+
+            line = f"{move_name}".ljust(26) + f"{damage}".rjust(4)
+            print(f"{Fore.CYAN}║ {Fore.WHITE}{line.ljust(width - 1)}{Fore.CYAN}║{Style.RESET_ALL}")
+
+        if fighter == "Terry":
+            print(f"{Fore.CYAN}║" + " " * width + f"║{Style.RESET_ALL}")
+            print(f"{Fore.CYAN}║ {Fore.RED}{'GO! at ≤35 HP'.ljust(width - 1)}{Fore.CYAN}║{Style.RESET_ALL}")
+            for move_key in ["power_geyser", "buster_wolf"]:
+                move_name, damage = moves[move_key]
+                line = f"{move_name}".ljust(26) + f"{damage}".rjust(4)
+                print(f"{Fore.CYAN}║ {Fore.WHITE}{line.ljust(width - 1)}{Fore.CYAN}║{Style.RESET_ALL}")
+
+        print(f"{Fore.CYAN}║" + " " * width + f"║{Style.RESET_ALL}")
+
+        final_name, final_damage = moves["final"]
+        final_label = f"Final: {final_name}"
+
+        if len(final_label) > 26:
+            final_label = final_label[:23] + "..."
+
+        final_line = final_label.ljust(26) + f"{final_damage}".rjust(4)
+        print(f"{Fore.CYAN}║ {Fore.MAGENTA}{final_line.ljust(width - 1)}{Fore.CYAN}║{Style.RESET_ALL}")
+
+        print(f"{Fore.CYAN}╚" + "═" * width + f"╝{Style.RESET_ALL}")
+
+        print(f"  {Fore.WHITE}{stats['description']}{Style.RESET_ALL}\n")
+
+        number += 1
+
+def choose_character():
+
+    fighters = list(CHARACTERS.keys())
+
+    while True:
+
+        display_characters()
+
+        choice = input(
+            f"Select Fighter (1-{len(fighters)}): "
+        )
+
+        if choice.isdigit():
+
+            choice = int(choice)
+
+            if 1 <= choice <= len(fighters):
+
+                fighter = fighters[choice - 1]
+
+                print()
+                print(f"You selected {fighter}!")
+                print()
+
+                return fighter
+
+        print("Invalid choice.\n")
+
+
+def create_fighter(name):
+
+    resource = CHARACTERS[name].get("resource", {})
+    resource_key = resource.get("key")
+    resources = (
+        {resource_key: resource.get("start", 0)}
+        if resource_key
+        else {}
+    )
+
+    return Fighter({
+        "name": name,
+        "hp": CHARACTERS[name]["hp"],
+        "speed": CHARACTERS[name]["speed"],
+        "stocks": 3,
+        "final_meter": 0,
+        "limit": 0,
+        "ko_meter": 0,
+        "resources": resources,
+        "used_final": False
+    })
+
+
+def resource_value(fighter):
+    """Return the current value of a fighter's configured resource."""
+    config = CHARACTERS[fighter["name"]].get("resource", {})
+    key = config.get("key")
+    if not key:
+        return 0
+    if key in {"limit", "ko_meter"}:
+        return fighter.get(key, config.get("start", 0))
+    return fighter.get("resources", {}).get(key, config.get("start", 0))
+
+
+def gain_resource(fighter, amount=None):
+    """Increase a configured resource without exceeding its maximum."""
+    config = CHARACTERS[fighter["name"]].get("resource", {})
+    key = config.get("key")
+    if not key:
+        return 0
+
+    gain = config.get("gain_per_round", 0) if amount is None else amount
+    if key in {"limit", "ko_meter"}:
+        current = fighter.get(key, config.get("start", 0))
+        updated = min(config.get("max", current), max(0, current + max(0, gain)))
+        fighter[key] = updated
+        return updated - current
+
+    resources = fighter.setdefault("resources", {})
+    current = resources.get(key, config.get("start", 0))
+    updated = min(config.get("max", current), max(0, current + max(0, gain)))
+    resources[key] = updated
+    return updated - current
+
+
+def spend_resource(fighter, amount):
+    """Spend resource only when enough is available; return success."""
+    config = CHARACTERS[fighter["name"]].get("resource", {})
+    key = config.get("key")
+    if not key or amount < 0:
+        return False
+
+    if key in {"limit", "ko_meter"}:
+        current = fighter.get(key, config.get("start", 0))
+        if current < amount:
+            return False
+        fighter[key] = current - amount
+        return True
+
+    resources = fighter.setdefault("resources", {})
+    current = resources.get(key, config.get("start", 0))
+    if current < amount:
+        return False
+
+    resources[key] = current - amount
+    return True
+
+
+def charge_round_resource(fighter):
+    """Apply the configured between-round resource gain and Kazuya's rage gain."""
+    name = fighter["name"]
+    if name in {"Cloud", "Little Mac", "Terry"}:
+        return
+
+    if name == "Kazuya":
+        missing_hp = CHARACTERS[name]["hp"] - fighter["hp"]
+        gain_resource(fighter, min(25, 10 + missing_hp // 5))
+        return
+
+    gain_resource(fighter)
+
+
+def display_resource(fighter):
+    """Print the fighter's configured resource using the appropriate colour."""
+    config = CHARACTERS[fighter["name"]].get("resource", {})
+    key = config.get("key")
+    if not key or fighter["name"] in {"Cloud", "Little Mac", "Terry"}:
+        return
+
+    value = resource_value(fighter)
+    colour = Fore.CYAN
+    print(f"{config['label']}: {colour}{value}/{config['max']}{Style.RESET_ALL}")
+
+
+def show_status(player, enemy):
+
+    print("=" * 60)
+
+    show_arena(player, enemy)
+
+    print()
+
+    print(
+        f"{Fore.GREEN}{player['name']} HP: "
+        f"{player['hp']} "
+        f"{health_bar(player)}{Style.RESET_ALL}"
+    )
+
+    print(
+        f"{Fore.RED}{enemy['name']} HP: "
+        f"{enemy['hp']} "
+        f"{health_bar(enemy)}{Style.RESET_ALL}"
+    )
+
+    print()
+
+    print(
+        f"Final Smash Meter: "
+        f"{player['final_meter']}%"
+    )
+
+    if (
+        player["final_meter"] >= 100
+        and not player["used_final"]
+    ):
+
+        print("FINAL SMASH READY!")
+
+    if player["name"] == "Cloud":
+
+        print(
+            f"Limit Gauge: "
+            f"{player['limit']}%"
+        )
+
+    if player["name"] == "Little Mac":
+
+        print(
+            f"KO Meter: "
+            f"{player['ko_meter']}%"
+        )
+
+        if player["ko_meter"] >= 100:
+
+            print("KO PUNCH READY!")
+
+    if player["name"] == "Terry":
+
+        if player["hp"] <= 35:
+
+            print("GO! Meter: READY!")
+
+        else:
+
+            print("GO! Meter: OFF")
+
+    display_resource(player)
+    display_resource(enemy)
+    print("=" * 60)
+
+
+def choose_move(player):
+
+    fighter = player["name"]
+    moves = CHARACTERS[fighter]["moves"]
+
+    print()
+    print("Choose a move")
+
+    if (
+        player["name"] == "Little Mac"
+        and player["ko_meter"] >= 100
+    ):
+
+        print("1. KO Punch")
+
+    else:
+
+        print(
+            f"1. {moves['neutral'][0]}"
+        )
+
+    print(
+        f"2. {moves['side'][0]}"
+    )
+
+    print(
+        f"3. {moves['up'][0]}"
+    )
+
+    print(
+        f"4. {moves['down'][0]}"
+    )
+
+    if (
+        player["final_meter"] >= 100
+        and not player["used_final"]
+    ):
+
+        print(
+            f"5. {moves['final'][0]}"
+        )
+
+    if (
+        player["name"] == "Terry"
+        and player["hp"] <= 35
+    ):
+
+        print(
+            f"6. {moves['power_geyser'][0]} (GO!)"
+        )
+
+        print(
+            f"7. {moves['buster_wolf'][0]} (GO!)"
+        )
+
+    while True:
+
+        choice = input("> ")
+
+        if choice in ["1", "2", "3", "4"]:
+
+            return MOVE_KEYS[choice]
+
+        if (
+            choice == "5"
+            and player["final_meter"] >= 100
+            and not player["used_final"]
+        ):
+
+            return "final"
+
+        if (
+            player["name"] == "Terry"
+            and player["hp"] <= 35
+            and choice in ["6", "7"]
+        ):
+
+            return MOVE_KEYS[choice]
+
+        print("Invalid move.")
+
+
+def calculate_damage(player, move):
+
+    fighter = player["name"]
+
+    move_name, damage = (
+        CHARACTERS[fighter]["moves"][move]
+    )
+
+    critical = False
+
+    if (
+        fighter == "Ness"
+        and move == "down"
+    ):
+
+        return move_name, 0, False
+
+    damage += random.randint(-1, 1)
+
+    damage = max(damage, 1)
+
+    # Resource-powered fighter mechanics.
+    if fighter == "Mario" and move == "neutral" and spend_resource(player, 1):
+        damage += 10
+        print("FIRE CHARGE! Empowered Fireball!")
+
+    elif fighter == "Luigi" and move == "side" and spend_resource(player, 1):
+        damage += 8
+        print("MISFIRE CHARGE! Green Missile powered up!")
+
+    elif fighter == "Sora" and move in {"side", "up", "down"}:
+        if spend_resource(player, 20):
+            damage += 8
+            print("MAGIC BOOST! Sora spends 20 Magic Points.")
+
+    elif fighter == "Mii Swordfighter" and move in {"side", "up"}:
+        if spend_resource(player, 1):
+            damage += 8
+            print("TECHNIQUE CHARGE! Special move empowered.")
+
+    elif fighter == "Duck Hunt Duo" and move in {"neutral", "side", "down"}:
+        if spend_resource(player, 1):
+            damage += 3
+            print("AMMO USED! Attack powered by the Ammo Supply.")
+        else:
+            damage = max(1, damage // 2)
+            print("OUT OF AMMO! Attack damage reduced.")
+
+    elif fighter == "Ness" and move in {"neutral", "side", "up"}:
+        if spend_resource(player, 15):
+            damage += 6
+            print("PSI BOOST! Ness spends 15 PSI Energy.")
+
+    elif fighter == "Kirby" and move != "down" and spend_resource(player, 1):
+        damage += 8
+        print("COPY CHARGE! Kirby powers up the attack.")
+
+    elif fighter == "R.O.B." and move in {"up", "down"}:
+        if spend_resource(player, 20):
+            damage += 8
+            print("THRUSTER BOOST! R.O.B. spends 20 Fuel.")
+
+    elif fighter == "Kazuya" and move == "down" and resource_value(player) >= 50:
+        spend_resource(player, 50)
+        damage += 15
+        print("RAGE DRIVE! Kazuya spends 50 Rage.")
+
+    if (
+        fighter == "Luigi"
+        and move == "up"
+        and random.randint(1, 5) == 1
+    ):
+
+        damage *= 2
+        critical = True
+
+    if (
+        fighter == "Cloud"
+        and move == "down"
+        and player["limit"] >= 100
+    ):
+
+        damage += 10
+        player["limit"] = 0
+
+        print()
+        print("LIMIT BREAK!")
+        print()
+
+    if (
+        fighter == "Little Mac"
+        and player["ko_meter"] >= 100
+        and move == "neutral"
+    ):
+
+        move_name = "KO Punch"
+        damage = 32
+
+        player["ko_meter"] = 0
+
+        print()
+        print("KO PUNCH!!")
+        print()
+
+    if (
+        fighter == "Terry"
+        and move in ["power_geyser", "buster_wolf"]
+    ):
+
+        print()
+        print("GO! MOVE ACTIVATED!")
+        print()
+
+    return move_name, damage, critical
+
+
+def enemy_choose_move(enemy, player):
+
+    moves = [
+        "neutral",
+        "side",
+        "up",
+        "down"
+    ]
+
+    enemy_name = enemy["name"]
+
+    enemy_moves = CHARACTERS[
+        enemy_name
+    ]["moves"]
+
+    if (
+        enemy["final_meter"] >= 100
+        and not enemy["used_final"]
+    ):
+
+        if player["hp"] <= 45:
+
+            return "final"
+
+        if random.random() < 0.60:
+
+            return "final"
+
+    if (
+        enemy_name == "Terry"
+        and enemy["hp"] <= 35
+        and random.random() < 0.70
+    ):
+
+        return random.choice(
+            ["power_geyser", "buster_wolf"]
+        )
+
+    if (
+        enemy_name == "Little Mac"
+        and enemy["ko_meter"] >= 100
+    ):
+
+        if player["hp"] <= 50:
+
+            return "neutral"
+
+        if random.random() < 0.75:
+
+            return "neutral"
+
+    if (
+        enemy_name == "Cloud"
+        and enemy["limit"] >= 100
+    ):
+
+        if player["hp"] <= 60:
+
+            return "down"
+
+        if random.random() < 0.70:
+
+            return "down"
+
+    if (
+        enemy_name == "Ness"
+        and enemy["hp"] <= 30
+        and random.random() < 0.65
+    ):
+
+        return "down"
+
+    if (
+        enemy_name == "Duck Hunt Duo"
+        and enemy["hp"] <= 30
+        and random.random() < 0.65
+    ):
+
+        return "up"
+
+    if player["hp"] <= 30:
+
+        strong_moves = []
+
+        for move in moves:
+
+            damage = enemy_moves[move][1]
+
+            if damage >= 10:
+
+                strong_moves.append(move)
+
+        if strong_moves and random.random() < 0.70:
+
+            return random.choice(
+                strong_moves
+            )
+
+    if enemy_name == "Ness" and enemy["hp"] > 50:
+
+        moves.remove("down")
+
+    if enemy_name == "Duck Hunt Duo" and enemy["hp"] > 50:
+
+        moves.remove("up")
+
+    weighted_moves = []
+
+    for move in moves:
+
+        damage = enemy_moves[move][1]
+
+        if damage >= 15:
+
+            weighted_moves.extend(
+                [move, move]
+            )
+
+        else:
+
+            weighted_moves.append(move)
+
+    return random.choice(
+        weighted_moves
+    )
+
+
+
+def choose_action():
+
+    print()
+    print("Choose an action:")
+    print("1. Attack")
+    print("2. Block")
+
+    while True:
+
+        choice = input("> ")
+
+        if choice == "1":
+            return "attack"
+
+        if choice == "2":
+            return "block"
+
+        print("Invalid choice.")
+
+
+def enemy_choose_action():
+
+    if random.random() < 0.25:
+        return "block"
+
+    return "attack"
+
+
+def attack_breaks_block(attacker):
+
+    block_chance = 0.70 - (
+        (attacker["speed"] - 0.8) * 0.35
+    )
+
+    return random.random() > block_chance
+
+
+def apply_block_damage(damage, attacker, defender, move):
+
+    if (
+        defender["name"] == "Cloud"
+        and move == "down"
+    ):
+        pass
+
+    if (
+        attacker["name"] == "Cloud"
+        and move == "down"
+    ):
+        print("Limit Break was completely blocked!")
+        return 0
+
+    if attack_breaks_block(attacker):
+
+        print("The attack broke through the block!")
+        return damage
+
+    damage = max(damage // 2, 1)
+    print("The attack was blocked!")
+    return damage
+
+
+def battle_round(player, enemy, round_number):
+
+    show_status(player, enemy)
+
+    print()
+    print(f"ROUND {round_number}")
+    print()
+
+    player_action = choose_action()
+
+    if player_action == "attack":
+        player_move = choose_move(player)
+    else:
+        player_move = None
+
+    enemy_action = enemy_choose_action()
+
+    if enemy_action == "attack":
+        enemy_move = enemy_choose_move(enemy, player)
+    else:
+        enemy_move = None
+
+    round_start_hp = player["hp"]
+
+    magnet_recovery = 0
+
+    if (
+        player["name"] == "Ness"
+        and player_move == "down"
+    ):
+
+        maximum_hp = CHARACTERS["Ness"]["hp"]
+
+        magnet_recovery = min(
+            10,
+            maximum_hp - player["hp"]
+        )
+
+        player["hp"] += magnet_recovery
+
+    if player_action == "attack":
+
+        player_move_name, player_damage, critical = (
+            calculate_damage(
+                player,
+                player_move
+            )
+        )
+
+    else:
+
+        player_move_name = None
+        player_damage = 0
+        critical = False
+
+    if enemy_action == "attack":
+
+        enemy_move_name, enemy_damage, enemy_critical = (
+            calculate_damage(
+                enemy,
+                enemy_move
+            )
+        )
+
+    else:
+
+        enemy_move_name = None
+        enemy_damage = 0
+        enemy_critical = False
+
+    print()
+
+    if player_action == "attack":
+
+        if (
+            player["name"] == "Ness"
+            and player_move == "down"
+        ):
+
+            print("You used Magnet!")
+
+            if magnet_recovery > 0:
+                print(
+                    f"Ness recovered "
+                    f"{magnet_recovery} HP!"
+                )
+            else:
+                print("Ness is already at full HP!")
+
+        else:
+
+            print(
+                f"You used "
+                f"{player_move_name}!"
+            )
+
+            if critical:
+                print("CRITICAL HIT!")
+
+    if (
+        player_action == "attack"
+        and player["name"] == "Little Mac"
+        and player_move == "down"
+    ):
+
+        print(
+            "Little Mac waits for an attack..."
+        )
+
+        if random.random() < 0.80:
+
+            player_hp_before = player["hp"]
+
+            print("Enemy landed the attack!")
+
+            player["hp"] -= enemy_damage
+
+            actual_damage = (
+                player_hp_before - player["hp"]
+            )
+
+            print("Slip Counter failed!")
+            print(
+                f"You took "
+                f"{actual_damage} damage!"
+            )
+
+        else:
+
+            enemy_hp_before = enemy["hp"]
+
+            print("Enemy missed!")
+
+            enemy["hp"] -= 22
+
+            actual_counter_damage = (
+                enemy_hp_before - enemy["hp"]
+            )
+
+            print("Slip Counter activated!")
+            print(
+                f"Enemy took "
+                f"{actual_counter_damage} damage!"
+            )
+
+    elif player_action == "attack":
+
+        if random.random() < 0.80:
+
+            damage = player_damage
+
+            if enemy_action == "block":
+
+                print(f"{enemy['name']} is blocking!")
+
+                if (
+                    player["name"] == "Cloud"
+                    and player_move == "down"
+                ):
+
+                    print(
+                        "Limit Break was "
+                        "completely blocked!"
+                    )
+
+                    damage = 0
+
+                elif attack_breaks_block(player):
+
+                    print(
+                        "The attack broke "
+                        "through the block!"
+                    )
+
+                else:
+
+                    damage = max(
+                        damage // 2,
+                        1
+                    )
+
+                    print(
+                        "The attack was blocked!"
+                    )
+
+            enemy["hp"] -= damage
+
+            print(
+                f"Enemy took "
+                f"{max(damage, 0)} damage!"
+            )
+
+        else:
+
+            print("You missed!")
+
+    if enemy["hp"] <= 0:
+
+        enemy["hp"] = 0
+
+        player["final_meter"] = min(
+            player["final_meter"] + 20,
+            100
+        )
+
+        if player["name"] == "Cloud":
+            player["limit"] = min(
+                player["limit"] + 25,
+                100
+            )
+
+        if player["name"] == "Little Mac":
+            player["ko_meter"] = min(
+                player["ko_meter"] + 20,
+                100
+            )
+
+        charge_round_resource(player)
+        charge_round_resource(enemy)
+
+        if player_move == "final":
+            player["used_final"] = True
+            player["final_meter"] = 0
+
+        return "enemy"
+
+    print()
+
+    if enemy_action == "attack":
+
+        print(
+            f"Enemy used "
+            f"{enemy_move_name}!"
+        )
+
+        if enemy_critical:
+            print("Critical Hit!")
+
+        if (
+            enemy["name"] == "Ness"
+            and enemy_move == "down"
+        ):
+
+            maximum_hp = CHARACTERS["Ness"]["hp"]
+
+            enemy_recovery = min(
+                10,
+                maximum_hp - enemy["hp"]
+            )
+
+            enemy["hp"] += enemy_recovery
+
+            if enemy_recovery > 0:
+                print(
+                    f"Ness recovered "
+                    f"{enemy_recovery} HP!"
+                )
+            else:
+                print(
+                    "Ness is already at full HP!"
+                )
+
+        elif random.random() < 0.80:
+
+            damage = enemy_damage
+
+            if player_action == "block":
+
+                print(f"{player['name']} is blocking!")
+
+                if (
+                    enemy["name"] == "Cloud"
+                    and enemy_move == "down"
+                ):
+
+                    print(
+                        "Limit Break was "
+                        "completely blocked!"
+                    )
+
+                    damage = 0
+
+                elif attack_breaks_block(enemy):
+
+                    print(
+                        "The attack broke "
+                        "through the block!"
+                    )
+
+                else:
+
+                    damage = max(
+                        damage // 2,
+                        1
+                    )
+
+                    print(
+                        "The attack was blocked!"
+                    )
+
+            player["hp"] -= damage
+
+            actual_damage = (
+                round_start_hp - player["hp"]
+            )
+
+            print(
+                f"You took "
+                f"{max(actual_damage, 0)} damage!"
+            )
+
+        else:
+
+            print("Enemy missed!")
+
+    player["final_meter"] = min(
+        player["final_meter"] + 20,
+        100
+    )
+
+    enemy["final_meter"] = min(
+        enemy["final_meter"] + 20,
+        100
+    )
+
+    if player["name"] == "Cloud":
+        player["limit"] = min(
+            player["limit"] + 25,
+            100
+        )
+
+    if enemy["name"] == "Cloud":
+        enemy["limit"] = min(
+            enemy["limit"] + 25,
+            100
+        )
+
+    if player["name"] == "Little Mac":
+        player["ko_meter"] = min(
+            player["ko_meter"] + 20,
+            100
+        )
+
+    if enemy["name"] == "Little Mac":
+        enemy["ko_meter"] = min(
+            enemy["ko_meter"] + 20,
+            100
+        )
+
+    charge_round_resource(player)
+    charge_round_resource(enemy)
+
+    if player_move == "final":
+        player["used_final"] = True
+        player["final_meter"] = 0
+
+    if enemy_move == "final":
+        enemy["used_final"] = True
+        enemy["final_meter"] = 0
+
+    player["hp"] = max(0, player["hp"])
+    enemy["hp"] = max(0, enemy["hp"])
+
+    if (
+        player["name"] == "Ness"
+        and player_move == "down"
+        and player["hp"] > round_start_hp
+    ):
+
+        net_recovery = player["hp"] - round_start_hp
+
+        if net_recovery > magnet_recovery:
+            print(
+                f"Ness gained "
+                f"{net_recovery} HP overall!"
+            )
+
+    print()
+    print(
+        f"Final Smash Meter: "
+        f"{player['final_meter']}%"
+    )
+
+    input("\nPress ENTER to continue...")
+
+    if player["hp"] <= 0:
+        return "player"
+
+    return None
+
+
+def choose_enemy(player_name):
+
+    fighters = list(
+        CHARACTERS.keys()
+    )
+
+    fighters.remove(
+        player_name
+    )
+
+    enemy = random.choice(
+        fighters
+    )
+
+    print()
+
+    print(
+        f"Your opponent is {enemy}!"
+    )
+
+    print()
+
+    return enemy
+
+
+def battle(player_name):
+
+    enemy_name = choose_enemy(player_name)
+
+    player = create_fighter(player_name)
+    enemy = create_fighter(enemy_name)
+
+    round_number = 1
+
+    while player["stocks"] > 0 and enemy["stocks"] > 0:
+
+        result = battle_round(
+            player,
+            enemy,
+            round_number
+        )
+
+        if result == "enemy":
+
+            enemy["stocks"] -= 1
+
+            if enemy["stocks"] > 0:
+
+                print()
+                print(
+                    f"{enemy['name']} was KO'd!"
+                )
+                print(
+                    f"Stocks remaining: "
+                    f"{enemy['stocks']}"
+                )
+
+                enemy = create_fighter(
+                    enemy_name
+                )
+
+                print(
+                    f"{enemy['name']} respawned!"
+                )
+
+            else:
+
+                break
+
+        elif result == "player":
+
+            player["stocks"] -= 1
+
+            if player["stocks"] > 0:
+
+                print()
+                print(
+                    f"{player['name']} was KO'd!"
+                )
+                print(
+                    f"Stocks remaining: "
+                    f"{player['stocks']}"
+                )
+
+                player = create_fighter(
+                    player_name
+                )
+
+                print(
+                    f"{player['name']} respawned!"
+                )
+
+            else:
+
+                break
+
+        round_number += 1
+
+        time.sleep(0.5)
+
+    print()
+    print("=" * 60)
+
+    if player["stocks"] > 0:
+
+        print("GAME!")
+        print()
+        print(
+            f"{player['name']} defeated "
+            f"{enemy['name']}!"
+        )
+
+    else:
+
+        print("GAME!")
+        print()
+        print(
+            f"{enemy['name']} defeated "
+            f"{player['name']}!"
+        )
+
+    print("=" * 60)
+
+
+def play_again():
+
+    while True:
+
+        choice = input(
+            "\nPlay Again? (y/n): "
+        ).lower()
+
+        if choice in [
+            "y",
+            "yes"
+        ]:
+
+            return True
+
+        if choice in [
+            "n",
+            "no"
+        ]:
+
+            return False
+
+        print(
+            "Please enter y or n."
+        )
+
+
+def main():
+
+    title()
+
+    while True:
+
+        player = choose_character()
+
+        print()
+
+        print(
+            f"You chose {player}!"
+        )
+
+        print()
+
+        input(
+            "Press ENTER to begin "
+            "the battle..."
+        )
+
+        battle(
+            player
+        )
+
+        if not play_again():
+
+            break
+
+    print()
+
+    print(
+        "=" * 60
+    )
+
+    print(
+        "Thanks for playing!"
+    )
+
+    print(
+        "Super Smash Bros. Ultimate "
+        "- Python Edition"
+    )
+
+    print(
+        "=" * 60
+    )
+
+
+if __name__ == "__main__":
+
+    main()
