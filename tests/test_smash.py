@@ -189,3 +189,21 @@ def test_kazuya_rage_drive_spends_rage_and_boosts_damage(monkeypatch):
     assert move_name == "Hell's Door"
     assert damage == 48
     assert resource_value(fighter) == 0
+
+
+def test_all_fighters_have_valid_resource_definitions():
+    for name, data in CHARACTERS.items():
+        config = data["resource"]
+        fighter = create_fighter(name)
+        assert config["key"]
+        assert config["label"]
+        assert config["max"] > 0
+        assert 0 <= config["start"] <= config["max"]
+        assert resource_value(fighter) == config["start"]
+
+
+def test_resource_gains_never_exceed_configured_maximum():
+    for name, data in CHARACTERS.items():
+        fighter = create_fighter(name)
+        gain_resource(fighter, data["resource"]["max"] * 2)
+        assert resource_value(fighter) <= data["resource"]["max"]
