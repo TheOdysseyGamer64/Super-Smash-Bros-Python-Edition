@@ -247,7 +247,7 @@ def test_kirby_copy_charge_empowers_neutral_attack(monkeypatch):
 def test_rob_fuel_empowers_thruster(monkeypatch):
     monkeypatch.setattr("smash.random.randint", lambda a, b: 0)
     fighter = create_fighter("R.O.B.")
-    gain_resource(fighter, 20)
+    fighter["resources"]["fuel"] = 20
 
     move_name, damage, _ = calculate_damage(fighter, "up")
 
