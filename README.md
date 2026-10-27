@@ -1,128 +1,139 @@
-# Super Smash Bros. Python Edition 
+# Super Smash Bros. Python Edition
 
-<img width="819" height="228" alt="image" src="https://github.com/user-attachments/assets/58b3c0e1-82a5-40f3-a936-f2b69e77bf77" />
+<img width="819" height="228" alt="Super Smash Bros. Python Edition banner" src="https://github.com/user-attachments/assets/58b3c0e1-82a5-40f3-a936-f2b69e77bf77" />
 
+**Super Smash Bros. Python Edition** is a fan-made, text-based fighting game inspired by the Super Smash Bros. series. Choose a fighter, face a CPU opponent, and use their moves and special mechanics to win the battle.
 
-**Super Smash Bros. Python Edition** is a text-based fighting game inspired by the **Super Smash Bros.** series. I wanted to make a text-based game that truly represented one of my most favourite games... and here we are!
-
-
-<img width="550" height="600" alt="Recording2026-10-02211455-ezgif com-speed" src="https://github.com/user-attachments/assets/a470d2cf-cafa-4523-b679-ff1f772c8ae7" />
+<img width="550" height="600" alt="Gameplay preview" src="https://github.com/user-attachments/assets/a470d2cf-cafa-4523-b679-ff1f772c8ae7" />
 
 ## Download
 
-> **The latest version of this game is 1.4.0, and you can download it from the 'Releases' tab. Look for the release marked 1.4.0. Or you can download it here:**
+The latest published release is **v1.4.0**. The v1.5.0 work is still being prepared, so the download below links to the latest published release.
 
 [Download Super Smash Bros. Python Edition v1.4.0](https://github.com/TheOdysseyGamer64/Super-Smash-Bros-Python-Edition/archive/refs/tags/1.4.0.zip)
 
+You can also browse the project's [Releases](https://github.com/TheOdysseyGamer64/Super-Smash-Bros-Python-Edition/releases) page.
+
 ## Features
 
-- Playable Super Smash Bros.-inspired fighters
-- Turn-based battles with different attacks
-- Fighter-specific mechanics, including:
-  - **Cloud:** Limit Gauge
-  - **Little Mac:** KO Meter
-  - **Terry**: GO! Meter
-- Final Smash system
-- Damage and HP system
-- CPU opponents
-- Battle arena and status display using ASCII
-- Fighter-specific moves and abilities
-- Simple terminal-based gameplay
+- Playable fighters with different stats and moves
+- Turn-based battles against CPU opponents
+- Fighter-specific attacks and mechanics
+- Final Smash meter and powerful Final Smash attacks
+- HP and damage system
+- Attack or block during a turn
+- ASCII battle arena, fighter sprites, and health bars
+- Coloured terminal output when Colorama is installed
 
-## Special Mechanics
+## Fighter-specific mechanics
+
+The current development code includes resource mechanics for several fighters:
+
+| Fighter | Mechanic |
+| --- | --- |
+| Mario | Fire Charge can empower Fireball |
+| Luigi | Misfire Charge can power up Green Missile |
+| Sora | Magic Points can boost special moves |
+| Mii Swordfighter | Technique Charges can empower special moves |
+| Duck Hunt Duo | Ammo Supply powers up selected attacks; running out reduces their damage |
+| Ness | PSI Energy can boost selected attacks; Magnet can recover HP |
+| Kirby | Copy Charge can empower attacks |
+| Kazuya | Rage builds based on missing HP; Rage Drive spends Rage |
+| R.O.B. | Fuel can boost selected attacks |
+| Cloud | Limit Gauge and Limit Break |
+| Little Mac | KO Meter and KO Punch |
+| Terry | GO! moves become available at low HP |
+
+Resource values, costs, and effects are part of the game's balancing and may change as v1.5.0 development continues.
 
 ### Final Smash
 
-Build your **Final Smash Meter** throughout the battle. Once it reaches **100%**, unleash your fighter's Final Smash to absolutely obliterate your opponent in one shot.
+Build the Final Smash Meter during battle. Once it reaches **100%**, a Final Smash becomes available, provided it has not already been used.
 
-> ⚠️ **Warning:** EXTREMELY overpowered.
+### Cloud: Limit Gauge
 
-### Cloud's Limit Gauge
+Cloud builds the Limit Gauge and can use Limit Break when the gauge is full.
 
-Cloud's **Limit Gauge** charges during battle. Reach **100%** to activate **Limit Break**.
+### Little Mac: KO Meter
 
-### Little Mac's KO Punch
+Little Mac builds his KO Meter. At **100%**, his neutral attack can become KO Punch.
 
-Build Little Mac's **KO Meter** to **100%** and unlock the devastating **KO Punch**.
+### Terry: GO!
 
-### Terry's GO! Mechanic
+Terry's GO! moves become available when his HP reaches **35 or below**.
 
-Terry enters his GO! state when his HP drops below 35.
+## Requirements
 
-When active, powerful GO! moves become available, including Power Geyser and Buster Wolf.
+- Python 3.10 or newer is recommended.
+- A terminal or Python editor, such as IDLE or VS Code.
+- The main `smash.py` program uses the accompanying `characters.json` file. Keep both files in the same folder.
+- [Colorama](https://pypi.org/project/colorama/) is optional and enables coloured terminal output. The game can fall back to uncoloured output if Colorama is not installed.
 
-## Requirements and How to Play
+To install Colorama, run:
 
-### Requirements
+```bash
+python -m pip install colorama
+```
 
-- A terminal (Windows and MacOS should work) or an editor with a runtime environment
+## How to play
 
-### How to Play
+1. Download and extract the project, or clone the repository.
+2. Open a terminal in the project folder.
+3. Run the main program:
 
-1. Open the `.py` file in your preferred Python editor or terminal
-2. Run the file:
+   ```bash
+   python smash.py
+   ```
 
-     - **Python IDLE:** Press `F5`
-     - **VS Code:** Press the `▶ Run` button
-     - **Terminal:** Usually it begins to execute the code once you open the file
+   Or run the standalone version:
 
-## Disclaimer (Please Read!)
+   ```bash
+   python smash.v.1.5.0.py
+   ```
 
-This is a **fan-made, non-commercial project** inspired by Super Smash Bros.
+4. Follow the prompts to choose a fighter and make your moves.
 
-Please note that there may still be bugs that haven't been spotted. I'll try my best to fix them as soon as possible!
+You can also open a Python file in IDLE and press **F5**, or use the Run control in your editor.
 
-**Super Smash Bros. and its characters are properties of their respective copyright and trademark holders. This project is not affiliated with, endorsed by, or sponsored by Nintendo or any other respective rights holder.**
+## Development and tests
 
-## What's Next?
+The repository includes automated tests. To run them locally, install pytest and run:
 
-Future updates may introduce:
+```bash
+python -m pip install pytest
+python -m pytest -q
+```
 
-- More fighters
-- Additional moves
-- More fighter-specific mechanics
-- Improved battle systems
-- Balancing changes
-- Additional game modes
-- And more...
+The project also uses Ruff for Python lint checks. Passing automated checks helps catch problems, but does not replace trying the game in a terminal.
 
-## What Does It Look Like?
+## Screenshots
 
-### Starting the Game
+### Starting the game
 
-<img width="550" height="600" alt="Recording2026-10-02211455-ezgif com-speed" src="https://github.com/user-attachments/assets/a470d2cf-cafa-4523-b679-ff1f772c8ae7" />
+<img width="550" height="600" alt="Gameplay at startup" src="https://github.com/user-attachments/assets/a470d2cf-cafa-4523-b679-ff1f772c8ae7" />
 
+### Fighters without special mechanics
 
+<img width="500" height="400" alt="Fighter selection preview" src="https://github.com/user-attachments/assets/cc1cc7b0-8190-4972-a55e-538e6111003a" />
 
+### Fighters with special mechanics
 
-When you first load up the game in the terminal, it looks like this.
+<img width="600" height="450" alt="Resource meter preview" src="https://github.com/user-attachments/assets/6e522e0b-bdac-459f-92d1-eeab22be7d01" />
 
-### Fighters Without Special Mechanics
+### Fully charged mechanics
 
-<img width="500" height="400" alt="image" src="https://github.com/user-attachments/assets/cc1cc7b0-8190-4972-a55e-538e6111003a" />
+<img width="600" height="700" alt="Fully charged mechanic preview" src="https://github.com/user-attachments/assets/a9409d90-faea-49ed-b9cb-6b1a3b3094a9" />
 
+Screenshots show earlier gameplay and may not reflect every change in the current development version.
 
+## Disclaimer
 
-Characters without special mechanics won't have an extra meter to charge.
+This is a **fan-made, non-commercial project** inspired by Super Smash Bros. Super Smash Bros. and its characters are the property of their respective copyright and trademark holders. This project is not affiliated with, endorsed by, or sponsored by Nintendo or any other rights holder.
 
-### Fighters With Special Mechanics
+There may still be bugs. The project is a learning experience, and fixes and improvements will continue as development progresses.
 
-<img width="600" height="450" alt="image" src="https://github.com/user-attachments/assets/6e522e0b-bdac-459f-92d1-eeab22be7d01" />
-
-
-However, fighters with special mechanics will have a meter to charge to unlock them.
-
-### Fully Charged Mechanics
-
-<img width="600" height="700" alt="image" src="https://github.com/user-attachments/assets/a9409d90-faea-49ed-b9cb-6b1a3b3094a9" />
-
-
-
-The mechanic will appear in the moveset once the meter is fully charged (**100%**) or when, in Terry's case, his HP drops below 35.
-
+---
 
 Thanks for playing **Super Smash Bros. Python Edition**!
 
 **Diesel**
-
-> **P.S.** I'm still learning how to properly code in Python and learning new things along the way, so it might take me some time to update this program. I may need to learn new techniques or ways to code more efficiently.
