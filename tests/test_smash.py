@@ -30,6 +30,7 @@ def test_create_fighter_starts_correctly():
         "final_meter": 0,
         "limit": 0,
         "ko_meter": 0,
+        "resources": {"limit": 0},
         "used_final": False,
     }
 
