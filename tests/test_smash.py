@@ -114,3 +114,14 @@ def test_terry_go_moves_are_available(monkeypatch):
     assert geyser_damage == 40
     assert wolf_name == "Buster Wolf"
     assert wolf_damage == 48
+
+
+def test_fighter_helpers_clamp_damage_and_healing():
+    fighter = create_fighter("Mario")
+
+    assert fighter.is_alive is True
+    assert fighter.take_damage(20) == 75
+    assert fighter.heal(10) == 85
+    assert fighter.heal(999) == 95
+    assert fighter.take_damage(999) == 0
+    assert fighter.is_alive is False
