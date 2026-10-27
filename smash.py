@@ -1,165 +1,20 @@
+import json
 import random
 import time
+from pathlib import Path
 
-CHARACTERS = {
-    "Cloud": {
-        "hp": 100,
-        "speed": 0.90,
-        "moves": {
-            "neutral": ("Slash", 5),
-            "side": ("Cross Slash", 15),
-            "up": ("Climhazzard", 10),
-            "down": ("Limit Break", 18),
-            "final": ("Omnislash Ver. 5", 55)
-        },
-        "description": "A mercenary who grows stronger through his Limit Gauge."
-    },
+try:
+    from colorama import Fore, Style, init as colorama_init  # noqa: I001
+    colorama_init(autoreset=True)
+except ImportError:
+    class _NoColor:
+        def __getattr__(self, _name):
+            return ""
+    Fore = Style = _NoColor()
 
-    "Mario": {
-        "hp": 95,
-        "speed": 0.95,
-        "moves": {
-            "neutral": ("Fireball", 8),
-            "side": ("Cape", 15),
-            "up": ("Super Jump Punch", 14),
-            "down": ("F.L.U.D.D.", 10),
-            "final": ("Mario Finale", 65)
-        },
-        "description": "Nintendo's famous plumber."
-    },
-
-    "Luigi": {
-        "hp": 92,
-        "speed": 0.95,
-        "moves": {
-            "neutral": ("Fireball", 5),
-            "side": ("Green Missile", 29),
-            "up": ("Super Jump Punch", 15),
-            "down": ("Luigi Cyclone", 20),
-            "final": ("Poltergust G-00", 52)
-        },
-        "description": "A timid fighter with surprising power."
-    },
-
-    "Sora": {
-        "hp": 97,
-        "speed": 0.93,
-        "moves": {
-            "neutral": ("Keyblade Slash", 16),
-            "side": ("Sonic Blade", 17),
-            "up": ("Aerial Sweep", 30),
-            "down": ("Magic Burst", 20),
-            "final": ("Sealing the Keyhole", 47)
-        },
-        "description": "The Keyblade wielder."
-    },
-
-    "Mii Swordfighter": {
-        "hp": 90,
-        "speed": 1.0,
-        "moves": {
-            "neutral": ("Jab Combo", 5),
-            "side": ("Gale Strike", 11),
-            "up": ("Skyward Slash Dash", 10),
-            "down": ("Blade Counter", 13),
-            "final": ("Final Edge", 32)
-        },
-        "description": "A balanced sword fighter."
-    },
-
-    "Little Mac": {
-        "hp": 90,
-        "speed": 1.10,
-        "moves": {
-            "neutral": ("Straight Lunge", 20),
-            "side": ("Jolt Haymaker", 28),
-            "up": ("Rising Uppercut", 10),
-            "down": ("Slip Counter", 0),
-            "final": ("Giga Mac", 65)
-        },
-        "description": "A fearless boxer with devastating punches."
-    },
-
-    "Duck Hunt Duo": {
-        "hp": 90,
-        "speed": 1.5,
-        "moves": {
-            "neutral": ("Can", 13),
-            "side": ("8-bit Frisbee", 20),
-            "up": ("the duck", 0),
-            "down": ("Gunman", 16),
-            "final": ("Firing Squad", 52)
-        },
-        "description": "A silly duo of a dog and a duck."
-    },
-
-    "Ness": {
-        "hp": 75,
-        "speed": 1.5,
-        "moves": {
-            "neutral": ("PK Spark", 30),
-            "side": ("PK Fire", 25),
-            "up": ("PK Thunder", 5),
-            "down": ("Magnet", 0),
-            "final": ("PK Starstorm", 47)
-        },
-        "description": "A village boy who possesses ESPER powers."
-    },
-
-    "Kirby": {
-        "hp": 70,
-        "speed": 1.7,
-        "moves": {
-            "neutral": ("Inhaler of Doom and Despair", 3),
-            "side": ("Flame Hammer", 27),
-            "up": ("Blue Blade", 15),
-            "down": ("Shapeshifter", 27),
-            "final": ("Rainbow Finisher", 65)
-        },
-        "description": "A pink blob."
-    },
-
-    "Kazuya": {
-        "hp": 97,
-        "speed": 0.8,
-        "moves": {
-            "neutral": ("Laser Eye", 10),
-            "side": ("Phantom Fist", 14),
-            "up": ("Devil Ascension", 7),
-            "down": ("Hell's Door", 33),
-            "final": ("Laser Eye Galore", 66)
-        },
-        "description": "A mercenary seeking revenge transforming into an all-powerful demon"
-    },
-
-    "R.O.B.": {
-        "hp": 100,
-        "speed": 1.1,
-        "moves": {
-            "neutral": ("Charger Laser", 19),
-            "side": ("Tornado Fist", 30),
-            "up": ("Thruster", 5),
-            "down": ("Sweep The Floor", 29),
-            "final": ("Ultra Laser 7000", 70)
-        },
-        "description": "A heavyweight hard - hitter... but he's a robot"
-    },
-
-    "Terry": {
-        "hp": 100,
-        "speed": 1.0,
-        "moves": {
-            "neutral": ("Power Wave", 9),
-            "side": ("Burn Knuckle", 19),
-            "up": ("Rising Tackle", 15),
-            "down": ("Crack Counter", 14),
-            "power_geyser": ("Power Geyser", 40),
-            "buster_wolf": ("Buster Wolf", 48),
-            "final": ("Triple Geyser", 68)
-        },
-        "description": "The Wolf of Legends."
-    }
-}
+CHARACTERS = json.loads(
+    (Path(__file__).resolve().parent / "characters.json").read_text(encoding="utf-8")
+)
 
 MOVE_KEYS = {
     "1": "neutral",
@@ -185,6 +40,24 @@ FIGHTER_ART = {
     "R.O.B.":           ["  [o]   ", " (ooo)  ", " =[|]=  ", " /___\\  "],
     "Terry":            [" |___|  ", " (o_o)  ", " /|_|\\  ", " _/ \\_  "]
 }
+
+ 
+class Fighter(dict):
+    """Runtime fighter state with reusable combat helpers."""
+
+    def take_damage(self, amount):
+        self["hp"] = max(0, self["hp"] - max(0, amount))
+        return self["hp"]
+
+    def heal(self, amount, maximum=None):
+        cap = maximum if maximum is not None else CHARACTERS[self["name"]]["hp"]
+        recovered = min(max(0, amount), max(0, cap - self["hp"]))
+        self["hp"] += recovered
+        return recovered
+
+    @property
+    def is_alive(self):
+        return self["hp"] > 0
 
 
 def title():
@@ -333,7 +206,7 @@ def choose_character():
 
 def create_fighter(name):
 
-    return {
+    return Fighter({
         "name": name,
         "hp": CHARACTERS[name]["hp"],
         "speed": CHARACTERS[name]["speed"],
@@ -342,7 +215,7 @@ def create_fighter(name):
         "limit": 0,
         "ko_meter": 0,
         "used_final": False
-    }
+    })
 
 
 def show_status(player, enemy):
@@ -354,15 +227,15 @@ def show_status(player, enemy):
     print()
 
     print(
-        f"{player['name']} HP: "
+        f"{Fore.GREEN}{player['name']} HP: "
         f"{player['hp']} "
-        f"{health_bar(player)}"
+        f"{health_bar(player)}{Style.RESET_ALL}"
     )
 
     print(
-        f"{enemy['name']} HP: "
+        f"{Fore.RED}{enemy['name']} HP: "
         f"{enemy['hp']} "
-        f"{health_bar(enemy)}"
+        f"{health_bar(enemy)}{Style.RESET_ALL}"
     )
 
     print()
