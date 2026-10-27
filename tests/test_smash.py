@@ -207,3 +207,51 @@ def test_resource_gains_never_exceed_configured_maximum():
         fighter = create_fighter(name)
         gain_resource(fighter, data["resource"]["max"] * 2)
         assert resource_value(fighter) <= data["resource"]["max"]
+
+def test_luigi_misfire_charge_empowers_green_missile(monkeypatch):
+    monkeypatch.setattr("smash.random.randint", lambda a, b: 0)
+    fighter = create_fighter("Luigi")
+    gain_resource(fighter, 1)
+
+    move_name, damage, _ = calculate_damage(fighter, "side")
+
+    assert move_name == "Green Missile"
+    assert damage == 37
+    assert resource_value(fighter) == 0
+
+
+def test_duck_hunt_attack_is_weaker_without_ammo(monkeypatch):
+    monkeypatch.setattr("smash.random.randint", lambda a, b: 0)
+    fighter = create_fighter("Duck Hunt Duo")
+    fighter["resources"]["ammo"] = 0
+
+    move_name, damage, _ = calculate_damage(fighter, "neutral")
+
+    assert move_name == "Can"
+    assert damage == 6
+    assert resource_value(fighter) == 0
+
+
+def test_kirby_copy_charge_empowers_neutral_attack(monkeypatch):
+    monkeypatch.setattr("smash.random.randint", lambda a, b: 0)
+    fighter = create_fighter("Kirby")
+    gain_resource(fighter, 1)
+
+    move_name, damage, _ = calculate_damage(fighter, "neutral")
+
+    assert move_name == "Inhaler of Doom and Despair"
+    assert damage == 11
+    assert resource_value(fighter) == 0
+
+
+def test_rob_fuel_empowers_thruster(monkeypatch):
+    monkeypatch.setattr("smash.random.randint", lambda a, b: 0)
+    fighter = create_fighter("R.O.B.")
+    gain_resource(fighter, 20)
+
+    move_name, damage, _ = calculate_damage(fighter, "up")
+
+    assert move_name == "Thruster"
+    assert damage == 13
+    assert resource_value(fighter) == 0
+
