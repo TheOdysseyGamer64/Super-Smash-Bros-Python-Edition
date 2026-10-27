@@ -1,7 +1,6 @@
 import json
 import random
 import time
-from pathlib import Path
 
 try:
     from colorama import Fore, Style, init as colorama_init  # noqa: I001
